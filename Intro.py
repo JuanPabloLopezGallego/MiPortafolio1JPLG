@@ -18,18 +18,18 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
  
- st.subheader("Conversión de texto a voz")
+ st.subheader("Mi primera página web en streamlit")
  image = Image.open('txt_to_audio2.png')
  st.image(image, width=190)
- st.write("En la siguiente enlace usaremos una de las aplicaciones de Inteligencia Artificial") 
- url = "https://imultimod.streamlit.app/"
+ st.write("Primer trabajo realizado en streamlit") 
+ url = "https://miprimerapagina-5gzdhzssqjm77bzqcehwe5.streamlit.app/"
  st.write(f"Texto a voz: [Enlace]({url})")
 
- st.subheader("Reconocimiento de Objetos")
+ st.subheader("OCR")
  image = Image.open('txt_to_audio.png')
  st.image(image, width=200)
- st.write("En la siguiente enlace veremos como se detectan objetos en Imágenes.") 
- url = "https://yolov5cmc.streamlit.app/"
+ st.write("En la siguiente enlace veremos como se detectan textos en Imágenes.") 
+ url = "https://reconocertextojplg-6juwyccehm7tzvrc4olrgc.streamlit.app/#lector-de-texto"
  st.write(f"YOLO: [Enlace]({url})")
 
  st.subheader("Entrenando Modelos")
@@ -40,18 +40,18 @@ with col1:
  st.write(f"YOLO: [Enlace]({url})")
 
 with col2: 
- st.subheader("Conversión de voz a texto")
+ st.subheader("Conversión de texto a voz")
  image = Image.open('OIG8.jpg')
  st.image(image, width=200)
- st.write("En la siguiente veremos una aplicación que usa la conversión de voz a texto.") 
- url = "https://traductorw.streamlit.app/"
- st.write(f"Voz a texto: [Enlace]({url})")
+ st.write("En la siguiente veremos una aplicación que usa la conversión de texto a voz") 
+ url = "https://imm1copiajplg-zdpnlzjgnlatk4cbll7wlj.streamlit.app/"
+ st.write(f"Texto a voz: [Enlace]({url})")
 
- st.subheader("Análisis de Datos")
+ st.subheader("OCR con traductor y generador de texto a audio ")
  image = Image.open('data_analisis.png')
  st.image(image, width=190)
  st.write("En la siguiente enlace veremos como se pueden analizar datos usando agentes.") 
- url = "https://dataagente.streamlit.app/"
+ url = "https://traductorextranjeros-jk7eekmjpdskckeba6x8mk.streamlit.app/"
  st.write(f"Datos: [Enlace]({url})")
 
  st.subheader("Trasnscriptor Audio y Video")
@@ -63,11 +63,11 @@ with col2:
 
 
 with col3: 
- st.subheader("Generación en Contexto")
+ st.subheader("Voz a texto")
  image = Image.open('Chat_pdf.png')
  st.image(image, width=190)
  st.write("En la siguiente veremos una aplicación que usa RAG a partir de un documento (PDF).") 
- url = "https://chatpdf-cc.streamlit.app/"
+ url = "https://traductorjplg-9zcgnf8wypri8t5yksyfsg.streamlit.app/"
  st.write(f"RAG: [Enlace]({url})")
 
  st.subheader("Análisis de Imagen")
