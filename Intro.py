@@ -32,12 +32,12 @@ with col1:
  url = "https://reconocertextojplg-6juwyccehm7tzvrc4olrgc.streamlit.app/#lector-de-texto"
  st.write(f"OCR: [Enlace]({url})")
 
- st.subheader("Entrenando Modelos")
- image = Image.open('OIG5.jpg')
+ st.subheader("Analizador de sentimientos")
+ image = Image.open('AnalisisSentimiento.PNG')
  st.image(image, width=200)
- st.write("En la siguiente enlace veremos como puedes usar tu modelo entrenado.") 
- url = "https://xn3pg24ztuv6fdiqon8qn3.streamlit.app/"
- st.write(f"YOLO: [Enlace]({url})")
+ st.write("En la siguiente enlace veremos como se usa el procesamiento de lenguaje natural para analizar sentimientos en una frase") 
+ url = "https://2mlysjdw4svsaudjglrkzt.streamlit.app/"
+ st.write(f"Analizador Sentimientos [Enlace]({url})")
   
  st.subheader("Entrenando Modelos")
  image = Image.open('OIG5.jpg')
