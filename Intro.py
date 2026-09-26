@@ -38,6 +38,13 @@ with col1:
  st.write("En la siguiente enlace veremos como puedes usar tu modelo entrenado.") 
  url = "https://xn3pg24ztuv6fdiqon8qn3.streamlit.app/"
  st.write(f"YOLO: [Enlace]({url})")
+  
+ st.subheader("Entrenando Modelos")
+ image = Image.open('OIG5.jpg')
+ st.image(image, width=200)
+ st.write("En la siguiente enlace veremos como puedes usar tu modelo entrenado.") 
+ url = "https://xn3pg24ztuv6fdiqon8qn3.streamlit.app/"
+ st.write(f"YOLO: [Enlace]({url})")
 
 with col2: 
  st.subheader("Conversión de texto a voz")
