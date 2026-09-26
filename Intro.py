@@ -35,7 +35,7 @@ with col1:
  st.subheader("Analizador de sentimientos")
  image = Image.open('AnalisisSentimiento.PNG')
  st.image(image, width=200)
- st.write("En el siguiente enlace veremos como se usa el procesamiento de lenguaje natural para analizar sentimientos en una frase") 
+ st.write("En el siguiente enlace veremos una aplicación para analizar sentimientos y subjetividad en una frase") 
  url = "https://2mlysjdw4svsaudjglrkzt.streamlit.app/"
  st.write(f"Analizador Sentimientos [Enlace]({url})")
   
