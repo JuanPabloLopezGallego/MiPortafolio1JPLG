@@ -41,7 +41,7 @@ with col1:
 
 with col2: 
  st.subheader("Conversión de texto a voz")
- image = Image.open('Voxlab.jpg')
+ image = Image.open('Voxlab.png')
  st.image(image, width=200)
  st.write("En la siguiente veremos una aplicación que usa la conversión de texto a voz") 
  url = "https://imm1copiajplg-zdpnlzjgnlatk4cbll7wlj.streamlit.app/"
