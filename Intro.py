@@ -66,7 +66,7 @@ with col3:
  st.subheader("Voz a texto")
  image = Image.open('VoxTranslate.PNG')
  st.image(image, width=190)
- st.write("En la siguiente veremos una aplicación que usa RAG a partir de un documento (PDF).") 
+ st.write("En la siguiente veremos una aplicación que escucha lo que dices, lo traduce y lo convierte en texto") 
  url = "https://traductorjplg-9zcgnf8wypri8t5yksyfsg.streamlit.app/"
  st.write(f"RAG: [Enlace]({url})")
 
