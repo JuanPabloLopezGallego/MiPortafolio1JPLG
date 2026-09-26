@@ -47,7 +47,7 @@ with col2:
  url = "https://imm1copiajplg-zdpnlzjgnlatk4cbll7wlj.streamlit.app/"
  st.write(f"Texto a voz: [Enlace]({url})")
 
- st.subheader("OCR con traductor y generador de texto a audio ")
+ st.subheader("OCR + Texto a audio")
  image = Image.open('OCRTraductor.PNG')
  st.image(image, width=190)
  st.write("En la siguiente enlace veremos como esta aplicación detecta textos en imágenes, traduce, y finalmente genera texto y audio") 
