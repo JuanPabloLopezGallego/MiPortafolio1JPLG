@@ -23,7 +23,7 @@ with col1:
  st.image(image, width=190)
  st.write("Primer trabajo realizado en streamlit") 
  url = "https://miprimerapagina-5gzdhzssqjm77bzqcehwe5.streamlit.app/"
- st.write(f"Texto a voz: [Enlace]({url})")
+ st.write(f"Mi primera página: [Enlace]({url})")
 
  st.subheader("OCR")
  image = Image.open('OCD.PNG')
