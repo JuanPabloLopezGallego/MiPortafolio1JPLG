@@ -52,7 +52,7 @@ with col2:
  st.image(image, width=190)
  st.write("En la siguiente enlace veremos como esta aplicación detecta textos en imágenes, traduce, y finalmente genera texto y audio") 
  url = "https://traductorextranjeros-jk7eekmjpdskckeba6x8mk.streamlit.app/"
- st.write(f"Datos: [Enlace]({url})")
+ st.write(f"Traductor OCR: [Enlace]({url})")
 
  st.subheader("Trasnscriptor Audio y Video")
  image = Image.open('OIG3.jpg')
