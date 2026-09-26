@@ -26,7 +26,7 @@ with col1:
  st.write(f"Texto a voz: [Enlace]({url})")
 
  st.subheader("OCR")
- image = Image.open('txt_to_audio.png')
+ image = Image.open('OCD.PNG')
  st.image(image, width=200)
  st.write("En la siguiente enlace veremos como se detectan textos en Imágenes.") 
  url = "https://reconocertextojplg-6juwyccehm7tzvrc4olrgc.streamlit.app/#lector-de-texto"
