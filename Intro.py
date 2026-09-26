@@ -30,7 +30,7 @@ with col1:
  st.image(image, width=200)
  st.write("En la siguiente enlace veremos como se detectan textos en Imágenes.") 
  url = "https://reconocertextojplg-6juwyccehm7tzvrc4olrgc.streamlit.app/#lector-de-texto"
- st.write(f"YOLO: [Enlace]({url})")
+ st.write(f"OCR: [Enlace]({url})")
 
  st.subheader("Entrenando Modelos")
  image = Image.open('OIG5.jpg')
@@ -68,7 +68,7 @@ with col3:
  st.image(image, width=190)
  st.write("En la siguiente veremos una aplicación que escucha lo que dices, lo traduce y lo convierte en texto") 
  url = "https://traductorjplg-9zcgnf8wypri8t5yksyfsg.streamlit.app/"
- st.write(f"RAG: [Enlace]({url})")
+ st.write(f"Voz a texto [Enlace]({url})")
 
  st.subheader("Análisis de Imagen")
  image = Image.open('OIG4.jpg')
