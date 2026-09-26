@@ -70,12 +70,12 @@ with col3:
  url = "https://traductorjplg-9zcgnf8wypri8t5yksyfsg.streamlit.app/"
  st.write(f"Voz a texto [Enlace]({url})")
 
- st.subheader("Análisis de Imagen")
- image = Image.open('OIG4.jpg')
+ st.subheader("Wordcloud")
+ image = Image.open('Wordcloud.PNG')
  st.image(image, width=200)
- st.write("En la siguiente enlace veremos la capacidad de análisis en Imágenes.") 
+ st.write("En la siguiente enlace veremos una aplicación que genera nubes de palabras") 
  url = "https://vision2-gpt4o.streamlit.app/"
- st.write(f"Vision: [Enlace]({url})")
+ st.write(f"Wordcloud: [Enlace]({url})")
  
  st.subheader("Sistema Ciberfísico")
  image = Image.open('OIG6.jpg')
