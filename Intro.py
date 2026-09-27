@@ -65,7 +65,7 @@ with col2:
  image = Image.open('TF.PNG')
  st.image(image, width=200)
  st.write("En el siguiente enlace veremos una aplicación para encontrar el documento más relevante a partir de una pregunta.") 
- url = "https://transcript-whisper.streamlit.app/"
+ url = "https://tf-idf-jplg-pufez8g8jqz82ru5wbvp5e.streamlit.app/
  st.write(f"Transcriptor: [Enlace]({url})")
 
 
