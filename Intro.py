@@ -42,9 +42,9 @@ with col1:
  st.subheader("Entrenando Modelos")
  image = Image.open('OIG5.jpg')
  st.image(image, width=200)
- st.write("En la siguiente enlace veremos como puedes usar tu modelo entrenado.") 
- url = "https://xn3pg24ztuv6fdiqon8qn3.streamlit.app/"
- st.write(f"YOLO: [Enlace]({url})")
+ st.write("En la siguiente enlace veremos como un modelo entrenado en Teachable Machine reconoce objetos") 
+ url = "https://tmjplg-mb3ejw24ybs3q9me8rjvnv.streamlit.app/"
+ st.write(f"Modelo Entrenado: [Enlace]({url})")
 
 with col2: 
  st.subheader("Conversión de texto a voz")
