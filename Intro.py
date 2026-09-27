@@ -410,7 +410,7 @@ def app_card(image_path, tag, title, desc, url):
 col_left, col_right = st.columns([1, 1.7], gap="large")
 
 with col_left:
-    b64 = img_to_b64('yo.png')
+    b64 = img_to_b64('yo.PNG')
     if b64:
         st.markdown(f"""
             <div class="portrait-wrap">
