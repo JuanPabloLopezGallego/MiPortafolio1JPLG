@@ -7,7 +7,7 @@ import io
 # CONFIGURACIÓN
 # ═══════════════════════════════════════════════════════════════
 st.set_page_config(
-    page_title="Portafolio · Interfaces Multimodales",
+    page_title="Portafolio · Juan Pablo · Interfaces Multimodales",
     page_icon="✨",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -51,7 +51,6 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* Ocultar chrome de Streamlit */
     #MainMenu { visibility: hidden; }
     footer { visibility: hidden; }
     header[data-testid="stHeader"] { background: transparent; }
@@ -106,6 +105,26 @@ st.markdown("""
     .hero-desc strong {
         color: var(--ink);
         font-weight: 600;
+    }
+
+    /* Aviso "primera parte" */
+    .hero-note {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: var(--accent-soft);
+        border-left: 3px solid var(--accent);
+        border-radius: 10px;
+        padding: 0.7rem 1rem;
+        font-size: 0.87rem;
+        color: #8a3a22;
+        font-weight: 500;
+        margin: 0 0 1.5rem 0;
+        line-height: 1.5;
+    }
+    .hero-note b {
+        color: var(--accent);
+        font-weight: 700;
     }
 
     /* Chips */
@@ -327,10 +346,8 @@ st.markdown("""
         margin: 0;
     }
 
-    /* Links generales */
     .stMarkdown a { text-decoration: none !important; }
 
-    /* Responsive */
     @media (max-width: 768px) {
         .hero-title { font-size: 2.3rem !important; }
         .section-title { font-size: 1.6rem !important; }
@@ -398,9 +415,9 @@ with col_left:
         st.markdown(f"""
             <div class="portrait-wrap">
                 <div class="portrait-frame">
-                    <img src="data:image/png;base64,{b64}" alt="Ilustración de perfil" />
+                    <img src="data:image/png;base64,{b64}" alt="Ilustración de Juan Pablo" />
                 </div>
-                <div class="portrait-caption">Diseño interactivo · 2026</div>
+                <div class="portrait-caption">Juan Pablo · 2026</div>
             </div>
         """, unsafe_allow_html=True)
     else:
@@ -409,23 +426,28 @@ with col_left:
                 <div class="portrait-frame">
                     <div class="portrait-fallback">👋</div>
                 </div>
-                <div class="portrait-caption">Diseño interactivo · 2026</div>
+                <div class="portrait-caption">Juan Pablo · 2026</div>
             </div>
         """, unsafe_allow_html=True)
 
 with col_right:
     st.markdown("""
-        <div class="hero-kicker">Portafolio · 2026</div>
-        <h1 class="hero-title">Hola, soy Juan Pablo, estudiante de <em>Diseño Interactivo</em></h1>
+        <div class="hero-kicker">Portafolio · Parte 1 de 2026</div>
+        <h1 class="hero-title">Hola, soy <em>Juan Pablo</em></h1>
         <p class="hero-desc">
-            Tengo <strong>20 años</strong> y estudio en <strong>EAFIT</strong>. Este portafolio reúne
-            los proyectos que desarrollé en la materia de <strong>Interfaces Multimodales</strong>
-            del 2026, donde exploramos cómo la inteligencia artificial puede extender nuestros
-            sentidos y crear nuevas formas de interacción.
+            Tengo <strong>20 años</strong> y estudio <strong>Diseño Interactivo</strong>
+            en <strong>EAFIT</strong>. Este es el <strong>primer capítulo</strong> de mi
+            portafolio para la materia de <strong>Interfaces Multimodales</strong>, donde
+            exploramos cómo la inteligencia artificial puede extender nuestros sentidos
+            y crear nuevas formas de interacción.
         </p>
+        <div class="hero-note">
+            🚧 <span>Esta es la <b>primera parte</b> del portafolio. Aún quedan más clases, actividades y proyectos por venir durante el semestre.</span>
+        </div>
         <div class="chips">
             <span class="chip">🎓 EAFIT</span>
             <span class="chip">🎨 Diseño Interactivo</span>
+            <span class="chip">👤 Juan Pablo</span>
             <span class="chip">📅 20 años</span>
             <span class="chip">✨ Interfaces Multimodales 2026</span>
         </div>
@@ -569,6 +591,6 @@ st.markdown("""
     <div class="footer">
         <span class="footer-mark">✦</span>
         <p class="footer-text">Hecho con curiosidad desde Medellín</p>
-        <p class="footer-sub">EAFIT · Interfaces Multimodales · 2026</p>
+        <p class="footer-sub">Juan Pablo · EAFIT · Interfaces Multimodales · 2026</p>
     </div>
 """, unsafe_allow_html=True)
