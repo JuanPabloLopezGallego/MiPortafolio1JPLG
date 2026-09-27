@@ -416,7 +416,7 @@ with col_left:
 with col_right:
     st.markdown("""
         <div class="hero-kicker">Portafolio · 2026</div>
-        <h1 class="hero-title">Hola, soy estudiante de <em>Diseño Interactivo</em></h1>
+        <h1 class="hero-title">Hola, soy Juan Pablo, estudiante de <em>Diseño Interactivo</em></h1>
         <p class="hero-desc">
             Tengo <strong>20 años</strong> y estudio en <strong>EAFIT</strong>. Este portafolio reúne
             los proyectos que desarrollé en la materia de <strong>Interfaces Multimodales</strong>
