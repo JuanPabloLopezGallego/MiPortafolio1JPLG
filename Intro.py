@@ -84,10 +84,10 @@ with col3:
  url = "https://vision2-gpt4o.streamlit.app/"
  st.write(f"Wordcloud: [Enlace]({url})")
  
- st.subheader("Sistema Ciberfísico")
- image = Image.open('OIG6.jpg')
+ st.subheader("Detector de objetos")
+ image = Image.open('DetectorYolo.PNG')
  st.image(image, width=200)
- st.write("En la siguiente enlace veremos la capacidad de interacción con el mundo físico.") 
- url = "https://vision2-gpt4o.streamlit.app/"
- st.write(f"Vision: [Enlace]({url})")
+ st.write("En la siguiente enlace veremos la capacidad de detectar objetos del mundo físico") 
+ url = "https://yolov5jplg-jhz4oyznamsgwqesdqsjur.streamlit.app/#deteccion-de-objetos"
+ st.write(f"Detector: [Enlace]({url})")
 
