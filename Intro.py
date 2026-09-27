@@ -72,7 +72,7 @@ st.markdown("""
         text-transform: uppercase;
         color: var(--accent);
         font-weight: 500;
-        margin-bottom: 1.2rem;
+        margin-bottom: 1rem;
     }
     .hero-kicker::before {
         content: '';
@@ -83,11 +83,11 @@ st.markdown("""
     }
     .hero-title {
         font-family: 'Instrument Serif', serif !important;
-        font-size: 3.4rem !important;
-        line-height: 1.02 !important;
+        font-size: 2.9rem !important;
+        line-height: 1.05 !important;
         letter-spacing: -0.025em !important;
         font-weight: 600 !important;
-        margin: 0 0 1.25rem 0 !important;
+        margin: 0 0 1.1rem 0 !important;
         color: var(--ink) !important;
     }
     .hero-title em {
@@ -96,10 +96,10 @@ st.markdown("""
         font-weight: 400;
     }
     .hero-desc {
-        font-size: 1.08rem;
+        font-size: 1.02rem;
         line-height: 1.65;
         color: var(--muted);
-        margin: 0 0 1.5rem 0;
+        margin: 0 0 1.35rem 0;
         max-width: 580px;
     }
     .hero-desc strong {
@@ -116,7 +116,7 @@ st.markdown("""
         font-size: 0.87rem;
         color: #8a3a22;
         font-weight: 500;
-        margin: 0 0 1.5rem 0;
+        margin: 0 0 1.35rem 0;
         line-height: 1.5;
         max-width: 580px;
     }
@@ -150,40 +150,60 @@ st.markdown("""
         transform: translateY(-2px);
     }
 
-    /* ═══ RETRATO (aplica al container con key="portrait_card") ═══ */
+    /* ═══ RETRATO (aplica al container key="portrait_card") ═══ */
     .st-key-portrait_card {
         background: #ffffff;
         border: 2px solid var(--ink);
         border-radius: 28px;
-        padding: 1.25rem;
-        box-shadow: 10px 10px 0 var(--accent);
+        padding: 1.5rem 1.5rem 1.1rem 1.5rem;
+        box-shadow: 12px 12px 0 var(--accent);
         transform: rotate(-2.5deg);
         transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        max-width: 340px;
+        max-width: 440px;
         margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
     }
     .st-key-portrait_card:hover {
         transform: rotate(0deg) translateY(-4px);
-        box-shadow: 14px 14px 0 var(--accent);
+        box-shadow: 16px 16px 0 var(--accent);
     }
     .st-key-portrait_card [data-testid="stImage"] {
-        border-radius: 14px;
+        border-radius: 16px;
         overflow: hidden;
     }
     .st-key-portrait_card img {
-        border-radius: 14px !important;
+        border-radius: 16px !important;
         width: 100%;
         display: block;
     }
+    .st-key-portrait_card [data-testid="stMarkdownContainer"] {
+        width: 100%;
+    }
 
     .portrait-caption {
-        margin-top: 1.5rem;
+        margin-top: 1.1rem;
+        padding-top: 0.9rem;
+        border-top: 1px dashed var(--border);
+        text-align: center;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.7rem;
-        letter-spacing: 0.18em;
+        font-size: 0.68rem;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
         color: var(--muted);
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+    }
+    .portrait-caption .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: inline-block;
     }
 
     /* ═══ SECCIONES ═══ */
@@ -337,11 +357,12 @@ st.markdown("""
 
     .stMarkdown a { text-decoration: none !important; }
 
-    @media (max-width: 768px) {
-        .hero-title { font-size: 2.3rem !important; }
+    @media (max-width: 900px) {
+        .hero-title { font-size: 2.4rem !important; }
         .section-title { font-size: 1.6rem !important; }
         .app-title { font-size: 1.25rem !important; }
         .block-container { padding-top: 1.5rem !important; }
+        .st-key-portrait_card { max-width: 340px; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -355,7 +376,6 @@ def img_to_b64(path):
     """Convierte una imagen a base64 para incrustarla en HTML."""
     try:
         img = Image.open(path)
-        # Asegurar un modo compatible con PNG
         if img.mode not in ('RGB', 'RGBA'):
             img = img.convert('RGBA')
         buf = io.BytesIO()
@@ -399,10 +419,13 @@ def app_card(image_path, tag, title, desc, url):
 # ═══════════════════════════════════════════════════════════════
 # HERO — ILUSTRACIÓN + PRESENTACIÓN
 # ═══════════════════════════════════════════════════════════════
-col_left, col_right = st.columns([1, 1.7], gap="large")
+col_left, col_right = st.columns(
+    [1, 1.35],
+    gap="large",
+    vertical_alignment="center",
+)
 
 with col_left:
-    # st.container(key=...) aplica la clase CSS .st-key-portrait_card
     with st.container(key="portrait_card"):
         try:
             st.image('yo.png', use_container_width=True)
@@ -411,10 +434,14 @@ with col_left:
                 '<div style="font-size:7rem; text-align:center;">👋</div>',
                 unsafe_allow_html=True,
             )
-    st.markdown(
-        '<div class="portrait-caption">Juan Pablo · 2026</div>',
-        unsafe_allow_html=True,
-    )
+        st.markdown(
+            '<div class="portrait-caption">'
+            '<span class="dot"></span>'
+            'Juan Pablo · 2026'
+            '<span class="dot"></span>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
 
 with col_right:
     st.markdown("""
