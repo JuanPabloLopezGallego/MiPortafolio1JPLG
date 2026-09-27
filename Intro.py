@@ -99,7 +99,7 @@ st.markdown("""
         font-size: 1.08rem;
         line-height: 1.65;
         color: var(--muted);
-        margin: 0 0 1.75rem 0;
+        margin: 0 0 1.5rem 0;
         max-width: 580px;
     }
     .hero-desc strong {
@@ -107,27 +107,24 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* Aviso "primera parte" */
     .hero-note {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.6rem;
+        display: inline-block;
         background: var(--accent-soft);
         border-left: 3px solid var(--accent);
         border-radius: 10px;
-        padding: 0.7rem 1rem;
+        padding: 0.75rem 1rem;
         font-size: 0.87rem;
         color: #8a3a22;
         font-weight: 500;
         margin: 0 0 1.5rem 0;
         line-height: 1.5;
+        max-width: 580px;
     }
     .hero-note b {
         color: var(--accent);
         font-weight: 700;
     }
 
-    /* Chips */
     .chips {
         display: flex;
         flex-wrap: wrap;
@@ -153,41 +150,32 @@ st.markdown("""
         transform: translateY(-2px);
     }
 
-    /* Retrato */
-    .portrait-wrap {
-        text-align: center;
-        padding: 1rem 0;
-    }
-    .portrait-frame {
-        background: var(--paper);
+    /* ═══ RETRATO (aplica al container con key="portrait_card") ═══ */
+    .st-key-portrait_card {
+        background: #ffffff;
         border: 2px solid var(--ink);
         border-radius: 28px;
         padding: 1.25rem;
         box-shadow: 10px 10px 0 var(--accent);
         transform: rotate(-2.5deg);
         transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        display: inline-block;
-        width: 100%;
         max-width: 340px;
+        margin: 0 auto;
     }
-    .portrait-frame:hover {
+    .st-key-portrait_card:hover {
         transform: rotate(0deg) translateY(-4px);
         box-shadow: 14px 14px 0 var(--accent);
     }
-    .portrait-frame img {
+    .st-key-portrait_card [data-testid="stImage"] {
+        border-radius: 14px;
+        overflow: hidden;
+    }
+    .st-key-portrait_card img {
+        border-radius: 14px !important;
         width: 100%;
         display: block;
-        border-radius: 14px;
     }
-    .portrait-fallback {
-        aspect-ratio: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 7rem;
-        border-radius: 14px;
-        background: #fff8ec;
-    }
+
     .portrait-caption {
         margin-top: 1.5rem;
         font-family: 'JetBrains Mono', monospace;
@@ -195,6 +183,7 @@ st.markdown("""
         letter-spacing: 0.18em;
         text-transform: uppercase;
         color: var(--muted);
+        text-align: center;
     }
 
     /* ═══ SECCIONES ═══ */
@@ -366,6 +355,9 @@ def img_to_b64(path):
     """Convierte una imagen a base64 para incrustarla en HTML."""
     try:
         img = Image.open(path)
+        # Asegurar un modo compatible con PNG
+        if img.mode not in ('RGB', 'RGBA'):
+            img = img.convert('RGBA')
         buf = io.BytesIO()
         img.save(buf, format='PNG')
         return base64.b64encode(buf.getvalue()).decode()
@@ -410,17 +402,19 @@ def app_card(image_path, tag, title, desc, url):
 col_left, col_right = st.columns([1, 1.7], gap="large")
 
 with col_left:
-    b64 = img_to_b64('yo.png')
-    if b64:
-        st.markdown(f"""
-            <div class="portrait-wrap">
-                <div class="portrait-frame">
-                    <img src="data:image/png;base64,{b64}" alt="Ilustración de Juan Pablo" />
-                </div>
-                <div class="portrait-caption">Juan Pablo · 2026</div>
-            </div>
-        """, unsafe_allow_html=True)
-  
+    # st.container(key=...) aplica la clase CSS .st-key-portrait_card
+    with st.container(key="portrait_card"):
+        try:
+            st.image('yo.png', use_container_width=True)
+        except Exception:
+            st.markdown(
+                '<div style="font-size:7rem; text-align:center;">👋</div>',
+                unsafe_allow_html=True,
+            )
+    st.markdown(
+        '<div class="portrait-caption">Juan Pablo · 2026</div>',
+        unsafe_allow_html=True,
+    )
 
 with col_right:
     st.markdown("""
