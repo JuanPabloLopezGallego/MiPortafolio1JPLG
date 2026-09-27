@@ -40,7 +40,7 @@ with col1:
  st.write(f"Analizador Sentimientos [Enlace]({url})")
   
  st.subheader("Entrenando Modelos")
- image = Image.open('OIG5.jpg')
+ image = Image.open('DetectorTM.PNG')
  st.image(image, width=200)
  st.write("En la siguiente enlace veremos como un modelo entrenado en Teachable Machine detecta expresiones faciales") 
  url = "https://tmjplg-mb3ejw24ybs3q9me8rjvnv.streamlit.app/"
