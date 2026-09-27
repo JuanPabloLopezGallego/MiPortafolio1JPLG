@@ -61,10 +61,10 @@ with col2:
  url = "https://traductorextranjeros-jk7eekmjpdskckeba6x8mk.streamlit.app/"
  st.write(f"Traductor OCR: [Enlace]({url})")
 
- st.subheader("Trasnscriptor Audio y Video")
- image = Image.open('OIG3.jpg')
+ st.subheader("TF-IDF")
+ image = Image.open('TF.PNG')
  st.image(image, width=200)
- st.write("En la siguiente enlace veremos como realizamos transcripciones de audio/video.") 
+ st.write("En el siguiente enlace veremos una aplicación para encontrar el documento más relevante a partir de una pregunta.") 
  url = "https://transcript-whisper.streamlit.app/"
  st.write(f"Transcriptor: [Enlace]({url})")
 
