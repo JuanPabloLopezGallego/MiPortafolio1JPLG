@@ -410,7 +410,7 @@ def app_card(image_path, tag, title, desc, url):
 col_left, col_right = st.columns([1, 1.7], gap="large")
 
 with col_left:
-    b64 = img_to_b64('yo.PNG')
+    b64 = img_to_b64('yo.png')
     if b64:
         st.markdown(f"""
             <div class="portrait-wrap">
@@ -420,15 +420,7 @@ with col_left:
                 <div class="portrait-caption">Juan Pablo · 2026</div>
             </div>
         """, unsafe_allow_html=True)
-    else:
-        st.markdown("""
-            <div class="portrait-wrap">
-                <div class="portrait-frame">
-                    <div class="portrait-fallback">👋</div>
-                </div>
-                <div class="portrait-caption">Juan Pablo · 2026</div>
-            </div>
-        """, unsafe_allow_html=True)
+  
 
 with col_right:
     st.markdown("""
