@@ -532,9 +532,9 @@ st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
 
 # ═══════════════════════════════════════════════════════════════
-# SECCIÓN 01 · LENGUAJE E INTELIGENCIA
+# SECCIÓN 01 · APLICACIONES CON LLMs
 # ═══════════════════════════════════════════════════════════════
-section_header("01", "Lenguaje e inteligencia", "3 aplicaciones")
+section_header("01", "Aplicaciones con LLMs", "3 aplicaciones")
 
 c1, c2, c3 = st.columns(3, gap="medium")
 with c1:
@@ -561,9 +561,9 @@ with c3:
 
 
 # ═══════════════════════════════════════════════════════════════
-# SECCIÓN 02 · VISIÓN Y TRAZO
+# SECCIÓN 02 · INTERACCIÓN CON INTERFACES TÁCTILES
 # ═══════════════════════════════════════════════════════════════
-section_header("02", "Visión y trazo", "3 aplicaciones")
+section_header("02", "Interacción con interfaces táctiles", "3 aplicaciones")
 
 c1, c2, c3 = st.columns(3, gap="medium")
 with c1:
@@ -590,9 +590,9 @@ with c3:
 
 
 # ═══════════════════════════════════════════════════════════════
-# SECCIÓN 03 · VOZ Y HARDWARE
+# SECCIÓN 03 · SISTEMAS CON INTERNET DE LAS COSAS
 # ═══════════════════════════════════════════════════════════════
-section_header("03", "Voz y hardware", "3 aplicaciones")
+section_header("03", "Sistemas con internet de las cosas", "3 aplicaciones")
 
 c1, c2, c3 = st.columns(3, gap="medium")
 with c1:
