@@ -7,53 +7,57 @@ import io
 # CONFIGURACIÓN
 # ═══════════════════════════════════════════════════════════════
 st.set_page_config(
-    page_title="Portafolio · Juan Pablo",
-    page_icon="⛩",
+    page_title="Portafolio · Juan Pablo · Parte 2",
+    page_icon="✦",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
 # ═══════════════════════════════════════════════════════════════
-# ESTILOS — ZEN / JAPONÉS MINIMALISTA
+# ESTILOS — COSMIC AMETHYST
 # ═══════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
     :root {
-        --washi:        #faf6f0;
-        --washi-2:      #f2ebe0;
-        --paper:        #ffffff;
-        --ink:          #1a1815;
-        --ink-2:        #3a3833;
-        --muted:        #8a8378;
-        --muted-2:      #b8b0a3;
-        --line:         #e8e0d0;
-        --line-2:       #d9d0bd;
-        --vermillion:   #c73e1d;
-        --vermillion-2: #a83018;
-        --vermillion-soft: #fbe9e4;
-        --sage:         #7a8b6f;
+        --bg:            #0a0618;
+        --bg-2:          #0f0a20;
+        --surface:       #140c26;
+        --surface-hover: #1e1133;
+        --border:        #2d1f4a;
+        --border-2:      #3d2b5f;
+        --text:          #f0eaff;
+        --text-2:        #c9bde0;
+        --muted:         #9a8bb5;
+        --muted-2:       #6b5a8a;
+        --violet:        #c084fc;
+        --violet-2:      #a855f7;
+        --violet-soft:   rgba(192, 132, 252, 0.14);
+        --amber:         #fbbf24;
+        --emerald:       #34d399;
     }
 
     html, body, [class*="css"], .stApp, button, input, textarea, select {
         font-family: 'Inter', sans-serif !important;
-        color: var(--ink);
+        color: var(--text);
     }
 
     h1, h2, h3, h4, h5 {
-        font-family: 'Shippori Mincho', serif !important;
-        font-weight: 500 !important;
-        color: var(--ink) !important;
+        font-family: 'Instrument Serif', serif !important;
+        font-weight: 400 !important;
+        color: var(--text) !important;
         letter-spacing: -0.01em !important;
     }
 
-    /* ═══ FONDO WASHI ═══ */
+    /* ═══ FONDO ESPACIAL ═══ */
     .stApp {
-        background-color: var(--washi) !important;
+        background-color: var(--bg) !important;
         background-image:
-            radial-gradient(circle at 15% 5%, rgba(199, 62, 29, 0.05), transparent 42%),
-            radial-gradient(circle at 85% 95%, rgba(122, 139, 111, 0.06), transparent 42%);
+            radial-gradient(ellipse at 15% -5%, rgba(168, 85, 247, 0.18), transparent 45%),
+            radial-gradient(ellipse at 85% 100%, rgba(192, 132, 252, 0.10), transparent 45%),
+            radial-gradient(circle at 60% 30%, rgba(251, 191, 36, 0.035), transparent 35%),
+            radial-gradient(circle at 20% 70%, rgba(52, 211, 153, 0.04), transparent 35%);
         background-attachment: fixed;
     }
 
@@ -76,7 +80,7 @@ st.markdown("""
         font-size: 0.7rem;
         letter-spacing: 0.24em;
         text-transform: uppercase;
-        color: var(--vermillion);
+        color: var(--violet);
         font-weight: 500;
         margin-bottom: 1.5rem;
     }
@@ -85,133 +89,156 @@ st.markdown("""
         display: inline-block;
         width: 34px;
         height: 1px;
-        background: var(--vermillion);
+        background: var(--violet);
     }
-    .hero h1 {
-        font-family: 'Shippori Mincho', serif !important;
-        font-size: 3.5rem !important;
-        line-height: 1.08 !important;
-        letter-spacing: -0.015em !important;
-        font-weight: 500 !important;
+    .hero-h1 {
+        font-family: 'Instrument Serif', serif !important;
+        font-size: 3.6rem !important;
+        line-height: 1.05 !important;
+        letter-spacing: -0.02em !important;
+        font-weight: 400 !important;
         margin: 0 0 1.5rem 0 !important;
-        color: var(--ink) !important;
+        color: var(--text) !important;
     }
-    .hero h1 em {
+    .hero-h1 em {
         font-style: italic;
-        color: var(--vermillion);
+        color: var(--violet);
         font-weight: 400;
     }
     .hero-desc {
         font-size: 1.02rem;
         line-height: 1.75;
-        color: var(--ink-2);
+        color: var(--text-2);
         margin: 0 0 1.75rem 0;
         max-width: 560px;
         font-weight: 300;
     }
     .hero-desc strong {
-        color: var(--ink);
+        color: var(--text);
         font-weight: 600;
     }
 
-    /* Hanko stamp (sello rojo) */
-    .hanko {
+    /* Badge "Parte 2" */
+    .part-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.4rem 0.9rem 0.4rem 0.55rem;
+        background: var(--violet-soft);
+        border: 1px solid rgba(192, 132, 252, 0.3);
+        border-radius: 100px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--violet);
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+    }
+    .part-badge .num {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 52px;
-        height: 52px;
-        background: var(--vermillion);
-        color: #ffffff !important;
-        font-family: 'Shippori Mincho', serif;
-        font-size: 1.35rem;
+        width: 22px;
+        height: 22px;
+        background: var(--violet);
+        color: var(--bg);
+        border-radius: 50%;
+        font-size: 0.65rem;
         font-weight: 700;
-        border-radius: 3px;
-        box-shadow: inset 0 0 0 2px rgba(255,255,255,0.18);
-        margin-bottom: 1.5rem;
     }
 
-    /* Aviso primera parte */
+    /* Note */
     .hero-note {
-        display: inline-flex;
+        display: flex;
         align-items: flex-start;
         gap: 0.85rem;
-        padding: 0.9rem 0 0.9rem 1.1rem;
-        border-left: 2px solid var(--vermillion);
+        padding: 1rem 1.1rem;
+        background: rgba(251, 191, 36, 0.06);
+        border-left: 2px solid var(--amber);
+        border-radius: 0 8px 8px 0;
         margin: 0 0 1.75rem 0;
         max-width: 540px;
         font-size: 0.9rem;
         line-height: 1.6;
-        color: var(--ink-2);
+        color: var(--text-2);
         font-weight: 400;
     }
+    .hero-note .icon {
+        color: var(--amber);
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
     .hero-note b {
-        color: var(--vermillion);
+        color: var(--amber);
         font-weight: 600;
     }
 
-    /* Chips minimal */
+    /* Chips */
     .chips {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem 1.25rem;
+        gap: 0.5rem;
     }
     .chip {
         display: inline-flex;
-        align-items: baseline;
-        gap: 0.5rem;
-        font-size: 0.85rem;
-        color: var(--ink-2);
-        padding: 0.15rem 0;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.4rem 0.85rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        font-size: 0.82rem;
+        color: var(--text-2);
+        white-space: nowrap;
     }
     .chip::before {
-        content: '·';
-        color: var(--vermillion);
-        font-weight: 700;
-        font-size: 1.2rem;
-        line-height: 1;
+        content: '';
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--violet);
     }
     .chip strong {
         font-weight: 600;
-        color: var(--ink);
+        color: var(--text);
     }
 
-    /* ═══ MARCO DEL RETRATO (kakemono) ═══ */
+    /* ═══ MARCO DEL RETRATO ═══ */
     .st-key-portrait_card {
-        background: var(--paper) !important;
-        border: 1px solid var(--ink) !important;
+        background: var(--surface) !important;
+        border: 1px solid var(--border-2) !important;
         padding: 1.1rem !important;
         position: relative;
         max-width: 380px;
         margin: 0 auto;
-        box-shadow: 6px 6px 0 rgba(199, 62, 29, 0.15) !important;
+        border-radius: 20px !important;
+        box-shadow: 0 24px 60px rgba(168, 85, 247, 0.20),
+                    0 0 80px rgba(168, 85, 247, 0.08) !important;
     }
     .st-key-portrait_card::before {
         content: '';
         position: absolute;
-        top: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 1px;
-        height: 12px;
-        background: var(--ink);
-    }
-    .st-key-portrait_card::after {
-        content: '';
-        position: absolute;
-        top: -18px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--vermillion);
+        inset: -1px;
+        border-radius: 21px;
+        padding: 1px;
+        background: linear-gradient(135deg,
+            rgba(192, 132, 252, 0.6),
+            transparent 40%,
+            transparent 60%,
+            rgba(251, 191, 36, 0.4));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
     }
     .st-key-portrait_card [data-testid="stImage"] {
-        border-radius: 0 !important;
+        border-radius: 12px !important;
+        overflow: hidden;
     }
     .st-key-portrait_card img {
-        border-radius: 0 !important;
+        border-radius: 12px !important;
         display: block;
         width: 100%;
     }
@@ -225,143 +252,127 @@ st.markdown("""
         text-transform: uppercase;
         color: var(--muted);
     }
-    .portrait-caption .stamp {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 26px;
-        height: 26px;
-        background: var(--vermillion);
-        color: #ffffff;
-        font-family: 'Shippori Mincho', serif;
-        font-weight: 700;
-        font-size: 0.78rem;
-        border-radius: 2px;
-        margin: 0 0.7rem;
-        vertical-align: middle;
+    .portrait-caption .star {
+        color: var(--violet);
+        margin: 0 0.6rem;
     }
 
     /* ═══ SECCIONES ═══ */
     .section-head {
-        display: grid;
-        grid-template-columns: auto auto 1fr auto;
-        align-items: baseline;
-        gap: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1.15rem;
         padding-bottom: 1.25rem;
         margin: 4rem 0 2.25rem 0;
-        border-bottom: 1px solid var(--line-2);
+        border-bottom: 1px solid var(--border);
     }
     .section-head:first-of-type { margin-top: 4rem; }
-    .section-kanji {
-        font-family: 'Shippori Mincho', serif;
-        font-size: 2rem;
-        font-weight: 500;
-        color: var(--vermillion);
-        line-height: 1;
-    }
     .section-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 42px;
+        height: 32px;
+        padding: 0 0.55rem;
+        background: var(--violet-soft);
+        border: 1px solid rgba(192, 132, 252, 0.3);
+        border-radius: 8px;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.72rem;
-        font-weight: 500;
-        color: var(--muted);
-        letter-spacing: 0.2em;
-        padding-bottom: 0.2rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--violet);
+        letter-spacing: 0.05em;
+        flex-shrink: 0;
     }
     .section-title {
-        font-family: 'Shippori Mincho', serif !important;
-        font-size: 1.5rem !important;
-        font-weight: 500 !important;
-        letter-spacing: 0.02em !important;
+        font-family: 'Instrument Serif', serif !important;
+        font-size: 1.65rem !important;
+        font-weight: 400 !important;
+        letter-spacing: -0.005em !important;
         margin: 0 !important;
-        color: var(--ink) !important;
+        color: var(--text) !important;
+        flex: 1;
     }
-    .section-en {
+    .section-count {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.7rem;
-        letter-spacing: 0.22em;
+        font-size: 0.68rem;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
         color: var(--muted-2);
         font-weight: 500;
-        padding-bottom: 0.2rem;
     }
 
     /* ═══ TARJETAS DE APP ═══ */
     .app-card {
         display: block !important;
-        background: var(--paper);
-        border: 1px solid var(--line-2);
-        padding: 1.75rem 1.65rem 1.6rem 1.65rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
         text-decoration: none !important;
-        color: var(--ink) !important;
-        transition: all 0.35s ease;
+        color: var(--text) !important;
+        transition: all 0.3s ease;
         height: 100%;
         margin-bottom: 0.5rem;
-        position: relative;
         overflow: hidden;
-    }
-    .app-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: var(--vermillion);
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.35s ease;
+        position: relative;
     }
     .app-card:hover {
-        border-color: var(--ink);
+        border-color: var(--violet);
         text-decoration: none !important;
-        color: var(--ink) !important;
-        box-shadow: 8px 8px 0 rgba(199, 62, 29, 0.10);
-        transform: translate(-2px, -2px);
-    }
-    .app-card:hover::before {
-        transform: scaleX(1);
+        color: var(--text) !important;
+        transform: translateY(-4px);
+        box-shadow: 0 20px 48px rgba(168, 85, 247, 0.18),
+                    0 0 0 1px rgba(192, 132, 252, 0.2);
+        background: var(--surface-hover);
     }
 
-    /* Glifo circular con kanji */
-    .app-glyph {
+    /* Espacio blanco para la imagen de la página */
+    .app-thumb {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        background: #ffffff;
+        border-bottom: 1px solid var(--border);
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 62px;
-        height: 62px;
-        border: 1px solid var(--ink);
-        border-radius: 50%;
-        margin-bottom: 1.5rem;
-        font-family: 'Shippori Mincho', serif;
-        font-size: 1.65rem;
-        font-weight: 500;
-        color: var(--ink);
-        background: transparent;
-        transition: all 0.35s ease;
+        overflow: hidden;
     }
-    .app-card:hover .app-glyph {
-        background: var(--vermillion);
-        color: #ffffff;
-        border-color: var(--vermillion);
-        transform: rotate(-8deg);
+    .app-thumb::after {
+        content: '◇';
+        font-family: 'Instrument Serif', serif;
+        font-size: 1.5rem;
+        color: #e5e0ec;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+    .app-card:hover .app-thumb::after {
+        color: var(--violet);
+        opacity: 1;
+        transform: scale(1.15) rotate(15deg);
     }
 
+    /* Contenido de la tarjeta */
+    .app-body {
+        padding: 1.35rem 1.4rem 1.5rem 1.4rem;
+    }
     .app-kicker {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.63rem;
         letter-spacing: 0.2em;
         text-transform: uppercase;
-        color: var(--vermillion);
+        color: var(--violet);
         font-weight: 500;
         margin-bottom: 0.7rem;
+        display: block;
     }
     .app-title {
-        font-family: 'Shippori Mincho', serif !important;
+        font-family: 'Instrument Serif', serif !important;
         font-size: 1.28rem !important;
-        font-weight: 500 !important;
+        font-weight: 400 !important;
         line-height: 1.3 !important;
         margin: 0 0 0.65rem 0 !important;
-        color: var(--ink) !important;
+        color: var(--text) !important;
         letter-spacing: -0.005em !important;
     }
     .app-desc {
@@ -379,13 +390,13 @@ st.markdown("""
         font-size: 0.7rem;
         letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: var(--ink);
+        color: var(--text-2);
         font-weight: 500;
         transition: gap 0.2s ease, color 0.2s ease;
     }
     .app-card:hover .app-link {
         gap: 0.9rem;
-        color: var(--vermillion);
+        color: var(--violet);
     }
 
     /* ═══ FOOTER ═══ */
@@ -393,25 +404,22 @@ st.markdown("""
         text-align: center;
         padding: 3.5rem 0 1rem 0;
         margin-top: 5rem;
-        border-top: 1px solid var(--line-2);
+        border-top: 1px solid var(--border);
         position: relative;
     }
-    .footer-enso {
-        display: inline-block;
-        width: 44px;
-        height: 44px;
-        border: 2px solid var(--vermillion);
-        border-radius: 50%;
-        border-right-color: transparent;
-        border-bottom-color: transparent;
-        transform: rotate(45deg);
-        margin-bottom: 1.25rem;
+    .footer-ornament {
+        font-family: 'Instrument Serif', serif;
+        font-size: 1.5rem;
+        color: var(--violet);
+        margin-bottom: 1rem;
+        display: block;
+        letter-spacing: 1rem;
     }
     .footer-text {
-        font-family: 'Shippori Mincho', serif;
-        font-size: 1.1rem;
+        font-family: 'Instrument Serif', serif;
+        font-size: 1.15rem;
         font-style: italic;
-        color: var(--ink);
+        color: var(--text);
         margin: 0 0 0.5rem 0;
         font-weight: 400;
     }
@@ -428,19 +436,19 @@ st.markdown("""
 
     /* ═══ SCROLLBAR ═══ */
     ::-webkit-scrollbar { width: 10px; height: 10px; }
-    ::-webkit-scrollbar-track { background: var(--washi); }
+    ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb {
-        background: var(--line-2);
-        border: 2px solid var(--washi);
+        background: var(--border-2);
+        border: 2px solid var(--bg);
+        border-radius: 10px;
     }
-    ::-webkit-scrollbar-thumb:hover { background: var(--vermillion); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--violet); }
 
     /* ═══ RESPONSIVE ═══ */
     @media (max-width: 900px) {
-        .hero h1 { font-size: 2.4rem !important; }
-        .section-title { font-size: 1.25rem !important; }
-        .section-head { grid-template-columns: auto auto 1fr; gap: 0.85rem; }
-        .section-en { display: none; }
+        .hero-h1 { font-size: 2.4rem !important; }
+        .section-title { font-size: 1.3rem !important; }
+        .section-count { display: none; }
         .app-title { font-size: 1.1rem !important; }
         .block-container { padding-top: 1.75rem !important; }
     }
@@ -451,25 +459,26 @@ st.markdown("""
 # ═══════════════════════════════════════════════════════════════
 # HELPERS
 # ═══════════════════════════════════════════════════════════════
-def section_header(kanji, num, title, title_en):
+def section_header(num, title, count):
     st.markdown(f"""
         <div class="section-head">
-            <div class="section-kanji">{kanji}</div>
-            <div class="section-num">{num}</div>
+            <span class="section-num">{num}</span>
             <h2 class="section-title">{title}</h2>
-            <span class="section-en">{title_en}</span>
+            <span class="section-count">{count}</span>
         </div>
     """, unsafe_allow_html=True)
 
 
-def app_card(glyph, kicker, title, desc, url):
+def app_card(kicker, title, desc, url):
     return f"""
         <a href="{url}" target="_blank" class="app-card">
-            <div class="app-glyph">{glyph}</div>
-            <div class="app-kicker">{kicker}</div>
-            <h3 class="app-title">{title}</h3>
-            <p class="app-desc">{desc}</p>
-            <span class="app-link">Abrir aplicación →</span>
+            <div class="app-thumb"></div>
+            <div class="app-body">
+                <span class="app-kicker">{kicker}</span>
+                <h3 class="app-title">{title}</h3>
+                <p class="app-desc">{desc}</p>
+                <span class="app-link">Abrir aplicación →</span>
+            </div>
         </a>
     """
 
@@ -489,24 +498,28 @@ with col_left:
                 unsafe_allow_html=True,
             )
     st.markdown(
-        '<div class="portrait-caption">Juan Pablo<span class="stamp">誠</span>2026</div>',
+        '<div class="portrait-caption">Juan Pablo<span class="star">✦</span>Parte 2 · 2026</div>',
         unsafe_allow_html=True,
     )
 
 with col_right:
     st.markdown("""
-        <div class="hanko">誠</div>
-        <div class="hero-kicker">Portafolio · Primera parte · 2026</div>
+        <div class="part-badge">
+            <span class="num">2</span>
+            <span>Segunda parte · Portafolio 2026</span>
+        </div>
+        <div class="hero-kicker">Interfaces Multimodales</div>
         <h1 class="hero-h1">Hola, soy<br><em>Juan Pablo</em></h1>
         <p class="hero-desc">
             Tengo <strong>20 años</strong> y estudio <strong>Diseño Interactivo</strong>
-            en <strong>EAFIT</strong>. Este es el primer capítulo de mi portafolio para
-            la materia de <strong>Interfaces Multimodales</strong>, donde exploramos cómo
-            la inteligencia artificial puede extender nuestros sentidos y crear nuevas
-            formas de interacción.
+            en <strong>EAFIT</strong>. Esta es la <strong>segunda parte</strong> de mi
+            portafolio para la materia de <strong>Interfaces Multimodales</strong>, donde
+            reunimos los proyectos más recientes del semestre: desde modelos de lenguaje
+            hasta integraciones con hardware y visión por computadora.
         </p>
         <div class="hero-note">
-            <span>🚧 Esta es la <b>primera parte</b> del portafolio. Aún quedan más clases, actividades y proyectos por venir durante el semestre.</span>
+            <span class="icon">✦</span>
+            <span>Esta es la <b>segunda parte</b> del portafolio. Reúne las actividades más recientes del curso, incluyendo las integraciones con hardware y los tableros interactivos.</span>
         </div>
         <div class="chips">
             <span class="chip"><strong>EAFIT</strong> Diseño Interactivo</span>
@@ -515,36 +528,17 @@ with col_right:
         </div>
     """, unsafe_allow_html=True)
 
-# Fix h1 font (needed since we use custom class for h1)
-st.markdown("""
-<style>
-    .hero-h1 {
-        font-family: 'Shippori Mincho', serif !important;
-        font-size: 3.5rem !important;
-        line-height: 1.08 !important;
-        letter-spacing: -0.015em !important;
-        font-weight: 500 !important;
-        margin: 0 0 1.5rem 0 !important;
-        color: #1a1815 !important;
-    }
-    .hero-h1 em {
-        font-style: italic;
-        color: #c73e1d;
-        font-weight: 400;
-    }
-</style>
-""", unsafe_allow_html=True)
+st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
 
 # ═══════════════════════════════════════════════════════════════
-# SECCIÓN 01 · LENGUAJE E IA
+# SECCIÓN 01 · LENGUAJE E INTELIGENCIA
 # ═══════════════════════════════════════════════════════════════
-section_header("言", "01", "Lenguaje e inteligencia", "Language & AI")
+section_header("01", "Lenguaje e inteligencia", "3 aplicaciones")
 
 c1, c2, c3 = st.columns(3, gap="medium")
 with c1:
     st.markdown(app_card(
-        "文",
         "NLP · Procesamiento",
         "Procesamiento de Lenguaje",
         "Explora cómo la IA comprende, analiza y genera lenguaje natural en español.",
@@ -552,7 +546,6 @@ with c1:
     ), unsafe_allow_html=True)
 with c2:
     st.markdown(app_card(
-        "智",
         "Visión + GPT",
         "Tablero inteligente",
         "Dibuja un boceto y deja que la IA lo interprete, lo describa o lo resuelva.",
@@ -560,7 +553,6 @@ with c2:
     ), unsafe_allow_html=True)
 with c3:
     st.markdown(app_card(
-        "算",
         "Matemáticas · GPT",
         "Tablero de matemáticas",
         "Dibuja una operación o ecuación y la IA la resuelve paso a paso con LaTeX.",
@@ -571,12 +563,11 @@ with c3:
 # ═══════════════════════════════════════════════════════════════
 # SECCIÓN 02 · VISIÓN Y TRAZO
 # ═══════════════════════════════════════════════════════════════
-section_header("視", "02", "Visión y trazo", "Vision & drawing")
+section_header("02", "Visión y trazo", "3 aplicaciones")
 
 c1, c2, c3 = st.columns(3, gap="medium")
 with c1:
     st.markdown(app_card(
-        "眼",
         "Computer Vision",
         "Visión artificial",
         "Modelos de visión por computadora que reconocen imágenes, objetos y patrones.",
@@ -584,7 +575,6 @@ with c1:
     ), unsafe_allow_html=True)
 with c2:
     st.markdown(app_card(
-        "数",
         "OCR · Números",
         "Tablero que lee números",
         "Escribe un número a mano y la IA lo reconoce e interpreta al instante.",
@@ -592,7 +582,6 @@ with c2:
     ), unsafe_allow_html=True)
 with c3:
     st.markdown(app_card(
-        "描",
         "Canvas · Personalizable",
         "Tablero para dibujar",
         "Un lienzo libre con herramientas y colores personalizables para crear.",
@@ -601,14 +590,13 @@ with c3:
 
 
 # ═══════════════════════════════════════════════════════════════
-# SECCIÓN 03 · VOZ E IoT
+# SECCIÓN 03 · VOZ Y HARDWARE
 # ═══════════════════════════════════════════════════════════════
-section_header("声", "03", "Voz y hardware", "Voice & IoT")
+section_header("03", "Voz y hardware", "3 aplicaciones")
 
 c1, c2, c3 = st.columns(3, gap="medium")
 with c1:
     st.markdown(app_card(
-        "声",
         "Voz · Control",
         "Control de voz",
         "Interactúa con la aplicación usando únicamente tu voz, sin tocar el teclado.",
@@ -616,7 +604,6 @@ with c1:
     ), unsafe_allow_html=True)
 with c2:
     st.markdown(app_card(
-        "光",
         "Sensor · MQTT",
         "Wokwi a Streamlit",
         "Un sensor simulado en Wokwi envía datos a Streamlit a través de MQTT.",
@@ -624,7 +611,6 @@ with c2:
     ), unsafe_allow_html=True)
 with c3:
     st.markdown(app_card(
-        "操",
         "Control · MQTT",
         "Streamlit a Wokwi",
         "Controla dispositivos simulados en Wokwi desde una interfaz en Streamlit.",
@@ -637,8 +623,8 @@ with c3:
 # ═══════════════════════════════════════════════════════════════
 st.markdown("""
     <div class="footer">
-        <div class="footer-enso"></div>
+        <span class="footer-ornament">✦ ✦ ✦</span>
         <p class="footer-text">Hecho con curiosidad desde Medellín</p>
-        <p class="footer-sub">Juan Pablo · EAFIT · Interfaces Multimodales · 2026</p>
+        <p class="footer-sub">Juan Pablo · EAFIT · Interfaces Multimodales · Parte 2 · 2026</p>
     </div>
 """, unsafe_allow_html=True)
