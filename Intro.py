@@ -534,53 +534,57 @@ st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 # ═══════════════════════════════════════════════════════════════
 # SECCIÓN 01 · APLICACIONES CON LLMs
 # ═══════════════════════════════════════════════════════════════
-section_header("01", "Aplicaciones con LLMs", "3 aplicaciones")
+section_header("01", "Aplicaciones con LLMs", "1 aplicación")
 
 c1, c2, c3 = st.columns(3, gap="medium")
-with c1:
+with c2:
     st.markdown(app_card(
         "NLP · Procesamiento",
         "Procesamiento de Lenguaje",
         "Explora cómo la IA comprende, analiza y genera lenguaje natural en español.",
         "https://procesamientolenguajejplg-dpcdtmrteadz4zxvzn8adh.streamlit.app/"
     ), unsafe_allow_html=True)
-with c2:
+
+
+# ═══════════════════════════════════════════════════════════════
+# SECCIÓN 02 · INTERACCIÓN CON INTERFACES TÁCTILES
+# ═══════════════════════════════════════════════════════════════
+section_header("02", "Interacción con interfaces táctiles", "5 aplicaciones")
+
+# Fila 1
+c1, c2, c3 = st.columns(3, gap="medium")
+with c1:
     st.markdown(app_card(
         "Visión + GPT",
         "Tablero inteligente",
         "Dibuja un boceto y deja que la IA lo interprete, lo describa o lo resuelva.",
         "https://tablerotuneado-dqjtotfrqskiyeosh6youa.streamlit.app/"
     ), unsafe_allow_html=True)
-with c3:
+with c2:
     st.markdown(app_card(
         "Matemáticas · GPT",
         "Tablero de matemáticas",
         "Dibuja una operación o ecuación y la IA la resuelve paso a paso con LaTeX.",
         "https://tablerotuneado-ez8ftd2kuoia7yoh7cpdhe.streamlit.app/"
     ), unsafe_allow_html=True)
-
-
-# ═══════════════════════════════════════════════════════════════
-# SECCIÓN 02 · INTERACCIÓN CON INTERFACES TÁCTILES
-# ═══════════════════════════════════════════════════════════════
-section_header("02", "Interacción con interfaces táctiles", "3 aplicaciones")
-
-c1, c2, c3 = st.columns(3, gap="medium")
-with c1:
+with c3:
     st.markdown(app_card(
         "Computer Vision",
         "Visión artificial",
         "Modelos de visión por computadora que reconocen imágenes, objetos y patrones.",
         "https://visionapp-8whsafj8pj5hdiuow4yjyb.streamlit.app/"
     ), unsafe_allow_html=True)
-with c2:
+
+# Fila 2
+c1, c2, c3 = st.columns(3, gap="medium")
+with c1:
     st.markdown(app_card(
         "OCR · Números",
         "Tablero que lee números",
         "Escribe un número a mano y la IA lo reconoce e interpreta al instante.",
         "https://tactilnumeros-kdpcwepxhzeer6zvu3cq6x.streamlit.app/"
     ), unsafe_allow_html=True)
-with c3:
+with c2:
     st.markdown(app_card(
         "Canvas · Personalizable",
         "Tablero para dibujar",
