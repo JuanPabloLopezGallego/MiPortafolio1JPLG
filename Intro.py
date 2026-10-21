@@ -204,22 +204,22 @@ st.markdown("""
         color: var(--text);
     }
 
-    /* ═══ MARCO DEL RETRATO (Aumentado de tamaño) ═══ */
+    /* ═══ MARCO DEL RETRATO (Aumentado) ═══ */
     .st-key-portrait_card {
         background: var(--surface) !important;
         border: 1px solid var(--border-2) !important;
-        padding: 1.5rem !important;
+        padding: 1rem !important; /* Padding reducido para dar más espacio a la imagen */
         position: relative;
-        max-width: 440px;         /* Más ancho para que la imagen crezca */
-        min-height: 520px;        /* Más alto como pediste */
+        width: 100%;             /* Ocupa todo el ancho disponible de la columna */
+        min-height: 600px;       /* Asegura que el marco sea alto */
         margin: 0 auto;
         border-radius: 20px !important;
         box-shadow: 0 24px 60px rgba(168, 85, 247, 0.20),
                     0 0 80px rgba(168, 85, 247, 0.08) !important;
         display: flex !important;
         flex-direction: column;
-        justify-content: center;  /* Centra la imagen verticalmente */
-        align-items: center;      /* Centra la imagen horizontalmente */
+        justify-content: center; 
+        align-items: center;     
     }
     .st-key-portrait_card::before {
         content: '';
@@ -250,8 +250,8 @@ st.markdown("""
         display: block;
         width: 100%;
         height: auto;
-        max-height: 400px;        /* Evita que la imagen se desborde si es muy vertical */
-        object-fit: contain;      /* Ajusta la imagen sin recortarla */
+        max-height: none;        /* Eliminado el límite de 400px para que crezca */
+        object-fit: contain;      
     }
 
     .portrait-caption {
@@ -462,7 +462,7 @@ st.markdown("""
         .section-count { display: none; }
         .app-title { font-size: 1.1rem !important; }
         .block-container { padding-top: 1.75rem !important; }
-        .st-key-portrait_card { min-height: 400px; }
+        .st-key-portrait_card { min-height: 450px; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -503,6 +503,7 @@ col_left, col_right = st.columns([1, 1.5], gap="large", vertical_alignment="cent
 with col_left:
     with st.container(key="portrait_card"):
         try:
+            # Nota: al aumentar el ancho del contenedor, la imagen crecerá proporcionalmente
             st.image('yo.png', use_container_width=True)
         except Exception:
             st.markdown(
