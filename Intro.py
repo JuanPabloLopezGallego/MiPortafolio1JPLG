@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import base64
 import io
+import os
 
 # ═══════════════════════════════════════════════════════════════
 # CONFIGURACIÓN
@@ -204,14 +205,14 @@ st.markdown("""
         color: var(--text);
     }
 
-    /* ═══ MARCO DEL RETRATO (Bloque Blanco Gigante) ═══ */
+    /* ═══ MARCO DEL RETRATO ═══ */
     .st-key-portrait_card {
-        background: #ffffff !important; /* Fondo blanco puro */
+        background: #ffffff !important;
         border: 1px solid var(--border-2) !important;
-        padding: 0 !important;          /* Sin padding para que la imagen llene todo */
+        padding: 0 !important;
         position: relative;
         width: 100%;
-        min-height: 620px;              /* Altura forzada para que sea imponente */
+        min-height: 620px;
         margin: 0 auto;
         border-radius: 24px !important;
         box-shadow: 0 24px 60px rgba(168, 85, 247, 0.20),
@@ -221,8 +222,6 @@ st.markdown("""
         align-items: center;
         overflow: hidden;
     }
-    
-    /* Borde con gradiente sutil */
     .st-key-portrait_card::before {
         content: '';
         position: absolute;
@@ -241,8 +240,6 @@ st.markdown("""
         pointer-events: none;
         z-index: 10;
     }
-    
-    /* Forzar a que el contenedor de la imagen de Streamlit ocupe todo */
     .st-key-portrait_card [data-testid="stImage"] {
         width: 100% !important;
         height: 100% !important;
@@ -252,20 +249,17 @@ st.markdown("""
         align-items: center;
         border-radius: 24px !important;
     }
-    
     .st-key-portrait_card [data-testid="stImage"] > div {
         width: 100% !important;
         height: 100% !important;
     }
-
-    /* La imagen en sí */
     .st-key-portrait_card img {
         width: 100% !important;
         height: 100% !important;
         max-height: 620px !important;
-        object-fit: contain !important; /* Escala al máximo manteniendo la ilustración completa */
+        object-fit: contain !important;
         display: block;
-        border-radius: 0 !important; /* Sin bordes redondeados internos */
+        border-radius: 0 !important;
     }
 
     .portrait-caption {
@@ -351,7 +345,7 @@ st.markdown("""
         background: var(--surface-hover);
     }
 
-    /* Espacio blanco para la imagen de la página */
+    /* Espacio para la imagen de la página */
     .app-thumb {
         width: 100%;
         aspect-ratio: 16 / 10;
@@ -363,6 +357,21 @@ st.markdown("""
         justify-content: center;
         overflow: hidden;
     }
+    .app-thumb img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+        z-index: 1;
+        transition: transform 0.4s ease;
+    }
+    .app-card:hover .app-thumb img {
+        transform: scale(1.05);
+    }
+    /* El ◇ solo aparece si no hay imagen */
     .app-thumb::after {
         content: '◇';
         font-family: 'Instrument Serif', serif;
@@ -370,11 +379,6 @@ st.markdown("""
         color: #e5e0ec;
         opacity: 0.8;
         transition: all 0.3s ease;
-    }
-    .app-card:hover .app-thumb::after {
-        color: var(--violet);
-        opacity: 1;
-        transform: scale(1.15) rotate(15deg);
     }
 
     /* Contenido de la tarjeta */
@@ -487,6 +491,14 @@ st.markdown("""
 # ═══════════════════════════════════════════════════════════════
 # HELPERS
 # ═══════════════════════════════════════════════════════════════
+def get_image_base64(path):
+    """Convierte una imagen local a Base64 para inyectarla en HTML."""
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            data = base64.b64encode(f.read()).decode("utf-8")
+            return f"data:image/png;base64,{data}"
+    return ""
+
 def section_header(num, title, count):
     st.markdown(f"""
         <div class="section-head">
@@ -496,11 +508,18 @@ def section_header(num, title, count):
         </div>
     """, unsafe_allow_html=True)
 
-
-def app_card(kicker, title, desc, url):
+def app_card(kicker, title, desc, url, image_path):
+    # Obtenemos la imagen en base64
+    b64_img = get_image_base64(image_path)
+    
+    # Si la imagen existe, la inyectamos; si no, dejamos el espacio para el ◇ por defecto
+    img_tag = f'<img src="{b64_img}" alt="{title}">' if b64_img else ''
+    
     return f"""
         <a href="{url}" target="_blank" class="app-card">
-            <div class="app-thumb"></div>
+            <div class="app-thumb">
+                {img_tag}
+            </div>
             <div class="app-body">
                 <span class="app-kicker">{kicker}</span>
                 <h3 class="app-title">{title}</h3>
@@ -514,7 +533,6 @@ def app_card(kicker, title, desc, url):
 # ═══════════════════════════════════════════════════════════════
 # HERO
 # ═══════════════════════════════════════════════════════════════
-# NOTA: Cambié las proporciones a [1.3, 1.5] para que la imagen tenga más ancho
 col_left, col_right = st.columns([1.3, 1.5], gap="large", vertical_alignment="center")
 
 with col_left:
@@ -571,14 +589,16 @@ with c1:
         "NLP · Procesamiento",
         "Procesamiento de Lenguaje",
         "Explora cómo la IA comprende, analiza y genera lenguaje natural en español.",
-        "https://procesamientolenguajejplg-dpcdtmrteadz4zxvzn8adh.streamlit.app/"
+        "https://procesamientolenguajejplg-dpcdtmrteadz4zxvzn8adh.streamlit.app/",
+        "LLM1.PNG"
     ), unsafe_allow_html=True)
 with c2:
     st.markdown(app_card(
         "Computer Vision",
         "Visión artificial",
         "Modelos de visión por computadora que reconocen imágenes, objetos y patrones.",
-        "https://visionapp-8whsafj8pj5hdiuow4yjyb.streamlit.app/"
+        "https://visionapp-8whsafj8pj5hdiuow4yjyb.streamlit.app/",
+        "LLM2.PNG"
     ), unsafe_allow_html=True)
 
 
@@ -594,14 +614,16 @@ with c1:
         "Visión + GPT",
         "Tablero inteligente",
         "Dibuja un boceto y deja que la IA lo interprete, lo describa o lo resuelva.",
-        "https://tablerotuneado-dqjtotfrqskiyeosh6youa.streamlit.app/"
+        "https://tablerotuneado-dqjtotfrqskiyeosh6youa.streamlit.app/",
+        "Tablero3.PNG"
     ), unsafe_allow_html=True)
 with c2:
     st.markdown(app_card(
         "Matemáticas · GPT",
         "Tablero de matemáticas",
         "Dibuja una operación o ecuación y la IA la resuelve paso a paso con LaTeX.",
-        "https://tablerotuneado-ez8ftd2kuoia7yoh7cpdhe.streamlit.app/"
+        "https://tablerotuneado-ez8ftd2kuoia7yoh7cpdhe.streamlit.app/",
+        "Tablero4.PNG"
     ), unsafe_allow_html=True)
 
 # Fila 2
@@ -611,14 +633,16 @@ with c1:
         "OCR · Números",
         "Tablero que lee números",
         "Escribe un número a mano y la IA lo reconoce e interpreta al instante.",
-        "https://tactilnumeros-kdpcwepxhzeer6zvu3cq6x.streamlit.app/"
+        "https://tactilnumeros-kdpcwepxhzeer6zvu3cq6x.streamlit.app/",
+        "Tablero1.PNG"
     ), unsafe_allow_html=True)
 with c2:
     st.markdown(app_card(
         "Canvas · Personalizable",
         "Tablero para dibujar",
         "Un lienzo libre con herramientas y colores personalizables para crear.",
-        "https://tableropersonalizado-nkqwmc7lntrdxrnqmo7nl6.streamlit.app/"
+        "https://tableropersonalizado-nkqwmc7lntrdxrnqmo7nl6.streamlit.app/",
+        "Tablero2.PNG"
     ), unsafe_allow_html=True)
 
 
@@ -633,21 +657,24 @@ with c1:
         "Voz · Control",
         "Control de voz",
         "Interactúa con la aplicación usando únicamente tu voz, sin tocar el teclado.",
-        "https://ctrlvoice-4zw5fqi5pmuizke4vdecw7.streamlit.app/"
+        "https://ctrlvoice-4zw5fqi5pmuizke4vdecw7.streamlit.app/",
+        "IOT3.PNG"
     ), unsafe_allow_html=True)
 with c2:
     st.markdown(app_card(
         "Sensor · MQTT",
         "Wokwi a Streamlit",
         "Un sensor simulado en Wokwi envía datos a Streamlit a través de MQTT.",
-        "https://lectormqtt-t59niwifyecackdckk82fx.streamlit.app/"
+        "https://lectormqtt-t59niwifyecackdckk82fx.streamlit.app/",
+        "IOT1.PNG"
     ), unsafe_allow_html=True)
 with c3:
     st.markdown(app_card(
         "Control · MQTT",
         "Streamlit a Wokwi",
         "Controla dispositivos simulados en Wokwi desde una interfaz en Streamlit.",
-        "https://appawokwicmqtt-spyylhsrmng4sdf5fncrty.streamlit.app/"
+        "https://appawokwicmqtt-spyylhsrmng4sdf5fncrty.streamlit.app/",
+        "IOT2.PNG"
     ), unsafe_allow_html=True)
 
 
