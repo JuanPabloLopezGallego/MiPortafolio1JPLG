@@ -204,17 +204,22 @@ st.markdown("""
         color: var(--text);
     }
 
-    /* ═══ MARCO DEL RETRATO ═══ */
+    /* ═══ MARCO DEL RETRATO (Aumentado de tamaño) ═══ */
     .st-key-portrait_card {
         background: var(--surface) !important;
         border: 1px solid var(--border-2) !important;
-        padding: 1.1rem !important;
+        padding: 1.5rem !important;
         position: relative;
-        max-width: 380px;
+        max-width: 440px;         /* Más ancho para que la imagen crezca */
+        min-height: 520px;        /* Más alto como pediste */
         margin: 0 auto;
         border-radius: 20px !important;
         box-shadow: 0 24px 60px rgba(168, 85, 247, 0.20),
                     0 0 80px rgba(168, 85, 247, 0.08) !important;
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center;  /* Centra la imagen verticalmente */
+        align-items: center;      /* Centra la imagen horizontalmente */
     }
     .st-key-portrait_card::before {
         content: '';
@@ -236,11 +241,17 @@ st.markdown("""
     .st-key-portrait_card [data-testid="stImage"] {
         border-radius: 12px !important;
         overflow: hidden;
+        width: 100%;
+        display: flex;
+        justify-content: center;
     }
     .st-key-portrait_card img {
         border-radius: 12px !important;
         display: block;
         width: 100%;
+        height: auto;
+        max-height: 400px;        /* Evita que la imagen se desborde si es muy vertical */
+        object-fit: contain;      /* Ajusta la imagen sin recortarla */
     }
 
     .portrait-caption {
@@ -451,6 +462,7 @@ st.markdown("""
         .section-count { display: none; }
         .app-title { font-size: 1.1rem !important; }
         .block-container { padding-top: 1.75rem !important; }
+        .st-key-portrait_card { min-height: 400px; }
     }
 </style>
 """, unsafe_allow_html=True)
