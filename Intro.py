@@ -192,11 +192,27 @@ html_content = f"""
         --amber: #fbbf24;
     }}
 
-    html, body, [class*="css"], .stApp {{
+    html, body {{
         font-family: 'Inter', sans-serif !important;
         background-color: var(--bg) !important;
         color: var(--text) !important;
         overflow-x: hidden !important;
+    }}
+
+    /* ═══════ CRÍTICO: contenedores de Streamlit transparentes ═══════ */
+    .stApp,
+    .stApp > div,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stHeader"],
+    [data-testid="stToolbar"],
+    [data-testid="stDecoration"],
+    .main,
+    .block-container,
+    .stMarkdown,
+    [data-testid="stMarkdownContainer"],
+    [data-testid="stVerticalBlock"] {{
+        background: transparent !important;
+        background-color: transparent !important;
     }}
 
     #MainMenu, footer, header[data-testid="stHeader"] {{
@@ -209,11 +225,19 @@ html_content = f"""
         max-width: 100% !important;
     }}
 
-    /* ═══════ FONDO BASE ═══════ */
-    .bg-cosmos {{
+    /* ═══════ WRAPPER DE FONDOS (se mueve al body vía JS) ═══════ */
+    #cosmos-bg {{
         position: fixed;
         inset: 0;
-        z-index: -10;
+        z-index: -1;
+        pointer-events: none;
+        overflow: hidden;
+    }}
+
+    /* ═══════ FONDO BASE ═══════ */
+    .bg-cosmos {{
+        position: absolute;
+        inset: 0;
         background:
             radial-gradient(ellipse at 15% -10%, rgba(168, 85, 247, 0.22), transparent 50%),
             radial-gradient(ellipse at 85% 110%, rgba(192, 132, 252, 0.14), transparent 50%),
@@ -225,13 +249,12 @@ html_content = f"""
 
     /* ═══════ MOUSE GLOW ═══════ */
     .mouse-glow {{
-        position: fixed;
+        position: absolute;
         top: 0; left: 0;
         width: 520px; height: 520px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(192, 132, 252, 0.13), rgba(192,132,252,0.04) 40%, transparent 65%);
+        background: radial-gradient(circle, rgba(192, 132, 252, 0.18), rgba(192,132,252,0.06) 40%, transparent 65%);
         pointer-events: none;
-        z-index: -6;
         transform: translate3d(calc(var(--mx, 50vw) - 260px), calc(var(--my, 50vh) - 260px), 0);
         transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
         filter: blur(20px);
@@ -240,17 +263,16 @@ html_content = f"""
 
     /* ═══════ ORBES CON PARALLAX ═══════ */
     .orb {{
-        position: fixed;
+        position: absolute;
         border-radius: 50%;
         filter: blur(90px);
         pointer-events: none;
-        z-index: -9;
-        opacity: 0.55;
+        opacity: 0.65;
         will-change: translate, transform;
     }}
     .orb-1 {{
         width: 520px; height: 520px;
-        background: radial-gradient(circle, rgba(168, 85, 247, 0.4), transparent 70%);
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.45), transparent 70%);
         top: -120px; left: -120px;
         animation: floatOrb 20s ease-in-out infinite;
         translate: var(--px, 0) var(--py, 0);
@@ -258,7 +280,7 @@ html_content = f"""
     }}
     .orb-2 {{
         width: 620px; height: 620px;
-        background: radial-gradient(circle, rgba(244, 114, 182, 0.25), transparent 70%);
+        background: radial-gradient(circle, rgba(244, 114, 182, 0.3), transparent 70%);
         bottom: -180px; right: -120px;
         animation: floatOrb 26s ease-in-out infinite reverse;
         translate: var(--px, 0) var(--py, 0);
@@ -271,12 +293,11 @@ html_content = f"""
 
     /* ═══════ AURORA ═══════ */
     .aurora {{
-        position: fixed;
+        position: absolute;
         inset: 0;
-        z-index: -9;
         pointer-events: none;
         overflow: hidden;
-        opacity: 0.5;
+        opacity: 0.55;
     }}
     .aurora-blob {{
         position: absolute;
@@ -286,19 +307,19 @@ html_content = f"""
     }}
     .aurora-1 {{
         width: 45vw; height: 45vw;
-        background: radial-gradient(circle, rgba(192, 132, 252, 0.55), transparent 70%);
+        background: radial-gradient(circle, rgba(192, 132, 252, 0.6), transparent 70%);
         top: -15%; left: 5%;
         animation: aurora1 24s ease-in-out infinite;
     }}
     .aurora-2 {{
         width: 40vw; height: 40vw;
-        background: radial-gradient(circle, rgba(244, 114, 182, 0.5), transparent 70%);
+        background: radial-gradient(circle, rgba(244, 114, 182, 0.55), transparent 70%);
         top: 35%; right: 0%;
         animation: aurora2 28s ease-in-out infinite;
     }}
     .aurora-3 {{
         width: 35vw; height: 35vw;
-        background: radial-gradient(circle, rgba(251, 191, 36, 0.4), transparent 70%);
+        background: radial-gradient(circle, rgba(251, 191, 36, 0.45), transparent 70%);
         bottom: -15%; left: 30%;
         animation: aurora3 22s ease-in-out infinite;
     }}
@@ -317,11 +338,10 @@ html_content = f"""
 
     /* ═══════ ESTRELLAS ═══════ */
     .stars {{
-        position: fixed;
+        position: absolute;
         inset: 0;
         pointer-events: none;
         background-repeat: repeat;
-        z-index: -8;
         background-image:
             radial-gradient(1.5px 1.5px at 20px 30px, rgba(255,255,255,0.8), transparent),
             radial-gradient(1px 1px at 40px 70px, rgba(192,132,252,0.7), transparent),
@@ -331,51 +351,48 @@ html_content = f"""
             radial-gradient(1.5px 1.5px at 350px 200px, rgba(255,255,255,0.5), transparent);
         background-size: 450px 250px;
         animation: starsMove 120s linear infinite, starsTwinkle 5s ease-in-out infinite;
-        opacity: 0.65;
+        opacity: 0.7;
     }}
     .stars-2 {{
-        position: fixed;
+        position: absolute;
         inset: 0;
         pointer-events: none;
         background-repeat: repeat;
-        z-index: -7;
         background-image:
             radial-gradient(1px 1px at 60px 40px, rgba(251,191,36,0.55), transparent),
             radial-gradient(1.2px 1.2px at 180px 90px, rgba(255,255,255,0.4), transparent),
             radial-gradient(1px 1px at 300px 150px, rgba(192,132,252,0.5), transparent);
         background-size: 340px 220px;
         animation: starsMove 75s linear infinite reverse, starsTwinkle 7s ease-in-out infinite 1s;
-        opacity: 0.5;
+        opacity: 0.55;
     }}
     @keyframes starsMove {{
         from {{ transform: translateY(0); }}
         to {{ transform: translateY(-250px); }}
     }}
     @keyframes starsTwinkle {{
-        0%, 100% {{ opacity: 0.65; }}
-        50% {{ opacity: 0.28; }}
+        0%, 100% {{ opacity: 0.7; }}
+        50% {{ opacity: 0.3; }}
     }}
 
     /* ═══════ CANVAS DE PARTÍCULAS ═══════ */
     .particle-canvas {{
-        position: fixed;
+        position: absolute;
         inset: 0;
-        z-index: -7;
         pointer-events: none;
-        width: 100vw;
-        height: 100vh;
-        opacity: 0.85;
+        width: 100%;
+        height: 100%;
+        opacity: 0.9;
     }}
 
     /* ═══════ GRID OVERLAY ═══════ */
     .grid-overlay {{
-        position: fixed;
+        position: absolute;
         inset: 0;
-        z-index: -7;
         pointer-events: none;
         background-image:
-            linear-gradient(rgba(192, 132, 252, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(192, 132, 252, 0.04) 1px, transparent 1px);
+            linear-gradient(rgba(192, 132, 252, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(192, 132, 252, 0.05) 1px, transparent 1px);
         background-size: 90px 90px;
         mask-image: radial-gradient(ellipse at 50% 40%, black 15%, transparent 70%);
         -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 15%, transparent 70%);
@@ -383,13 +400,12 @@ html_content = f"""
 
     /* ═══════ ESTRELLAS FUGACES ═══════ */
     .shooting-star {{
-        position: fixed;
+        position: absolute;
         top: 15%; left: -120px;
         width: 120px; height: 2px;
         background: linear-gradient(90deg, transparent, var(--violet), transparent);
         border-radius: 100px;
         filter: blur(0.5px);
-        z-index: -6;
         pointer-events: none;
         opacity: 0;
         animation: shoot 12s linear infinite;
@@ -475,6 +491,8 @@ html_content = f"""
 
     /* ═══════ CONTENEDOR PRINCIPAL ═══════ */
     .experience-wrap {{
+        position: relative;
+        z-index: 1;
         max-width: 1240px;
         margin: 0 auto;
         padding: 3rem 2rem 5rem;
@@ -1065,23 +1083,27 @@ html_content = f"""
     .back-top:hover {{ color: var(--violet); }}
 </style>
 
-<!-- FONDO -->
-<div class="bg-cosmos"></div>
-<div class="mouse-glow" id="mouse-glow"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="aurora">
-    <div class="aurora-blob aurora-1"></div>
-    <div class="aurora-blob aurora-2"></div>
-    <div class="aurora-blob aurora-3"></div>
+<!-- FONDOS ANIMADOS (se mueven al body vía JS para escapar el stacking context) -->
+<div id="cosmos-bg">
+    <div class="bg-cosmos"></div>
+    <div class="mouse-glow" id="mouse-glow"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="aurora">
+        <div class="aurora-blob aurora-1"></div>
+        <div class="aurora-blob aurora-2"></div>
+        <div class="aurora-blob aurora-3"></div>
+    </div>
+    <div class="stars"></div>
+    <div class="stars-2"></div>
+    <canvas class="particle-canvas" id="particle-canvas"></canvas>
+    <div class="grid-overlay"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star s2"></div>
+    <div class="shooting-star s3"></div>
 </div>
-<div class="stars"></div>
-<div class="stars-2"></div>
-<canvas class="particle-canvas" id="particle-canvas"></canvas>
-<div class="grid-overlay"></div>
-<div class="shooting-star"></div>
-<div class="shooting-star s2"></div>
-<div class="shooting-star s3"></div>
+
+<!-- Barra de progreso (fuera del wrapper, z-index positivo) -->
 <div class="scroll-progress" id="scroll-bar"></div>
 
 <!-- SIDE NAV -->
@@ -1231,6 +1253,15 @@ components.html(
         if (probe.dataset.jsReady === 'true') return;
         probe.dataset.jsReady = 'true';
 
+        // ── 0. Mover fondos al body del padre ──────────────
+        // Esto escapa el stacking context de Streamlit y permite
+        // que los z-index negativos de los fondos se vean.
+        const bg = doc.getElementById('cosmos-bg');
+        if (bg && bg.parentNode !== doc.body) {
+            doc.body.insertBefore(bg, doc.body.firstChild);
+        }
+
+        // ── 1. Scroll progress bar ──────────────────────────
         function updateProgress() {
             const scrollTop = win.scrollY || doc.documentElement.scrollTop;
             const docHeight = doc.documentElement.scrollHeight - win.innerHeight;
@@ -1241,6 +1272,7 @@ components.html(
         doc.addEventListener('scroll', updateProgress, { passive: true });
         updateProgress();
 
+        // ── 2. Side nav: click + IntersectionObserver ──────
         const sectionIds = ['inicio', 'llms', 'tactil', 'iot', 'final'];
         const navLinks = doc.querySelectorAll('.side-nav-dot-wrap');
 
@@ -1279,6 +1311,7 @@ components.html(
             });
         }
 
+        // ── 3. Carruseles ──────────────────────────────────
         doc.querySelectorAll('.carousel-wrap').forEach(wrap => {
             if (wrap.dataset.carouselBound === 'true') return;
             wrap.dataset.carouselBound = 'true';
@@ -1326,6 +1359,7 @@ components.html(
             updateDots();
         });
 
+        // ── 4. Mouse glow + parallax ───────────────────────
         const glow = doc.getElementById('mouse-glow');
         const orb1 = doc.querySelector('.orb-1');
         const orb2 = doc.querySelector('.orb-2');
@@ -1347,6 +1381,7 @@ components.html(
             }, { passive: true });
         }
 
+        // ── 5. Canvas de partículas flotantes ──────────────
         const canvas = doc.getElementById('particle-canvas');
         if (canvas && !canvas.dataset.bound) {
             canvas.dataset.bound = 'true';
