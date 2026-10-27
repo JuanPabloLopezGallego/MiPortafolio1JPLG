@@ -1210,7 +1210,7 @@ html_content = f"""
 </div>
 """
 
-# Fix de indentación para st.markdown (evita que Streamlit interprete líneas como bloques de código)
+# Fix de indentación para st.markdown
 html_content = "\n".join(line.lstrip() for line in html_content.split("\n"))
 
 st.markdown(html_content, unsafe_allow_html=True)
@@ -1231,7 +1231,6 @@ components.html(
         if (probe.dataset.jsReady === 'true') return;
         probe.dataset.jsReady = 'true';
 
-        // ── 1. Scroll progress bar ──────────────────────────
         function updateProgress() {
             const scrollTop = win.scrollY || doc.documentElement.scrollTop;
             const docHeight = doc.documentElement.scrollHeight - win.innerHeight;
@@ -1242,7 +1241,6 @@ components.html(
         doc.addEventListener('scroll', updateProgress, { passive: true });
         updateProgress();
 
-        // ── 2. Side nav: click + IntersectionObserver ──────
         const sectionIds = ['inicio', 'llms', 'tactil', 'iot', 'final'];
         const navLinks = doc.querySelectorAll('.side-nav-dot-wrap');
 
@@ -1281,7 +1279,6 @@ components.html(
             });
         }
 
-        // ── 3. Carruseles ──────────────────────────────────
         doc.querySelectorAll('.carousel-wrap').forEach(wrap => {
             if (wrap.dataset.carouselBound === 'true') return;
             wrap.dataset.carouselBound = 'true';
@@ -1329,7 +1326,6 @@ components.html(
             updateDots();
         });
 
-        // ── 4. Mouse glow + parallax ───────────────────────
         const glow = doc.getElementById('mouse-glow');
         const orb1 = doc.querySelector('.orb-1');
         const orb2 = doc.querySelector('.orb-2');
@@ -1351,7 +1347,6 @@ components.html(
             }, { passive: true });
         }
 
-        // ── 5. Canvas de partículas flotantes ──────────────
         const canvas = doc.getElementById('particle-canvas');
         if (canvas && !canvas.dataset.bound) {
             canvas.dataset.bound = 'true';
