@@ -1,10 +1,19 @@
+"""
+═══════════════════════════════════════════════════════════════════════════
+ PORTAFOLIO · JUAN PABLO · PARTE 2
+ Interfaces Multimodales — EAFIT
+ Experiencia web interactiva en Streamlit (sin librerías externas!)
+═══════════════════════════════════════════════════════════════════════════
+"""
+
 import streamlit as st
 import base64
 import os
+import html as html_lib
 
-# ═══════════════════════════════════════════════════════════════
-# CONFIGURACIÓN DE PÁGINA
-# ═══════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════════════
+# CONFIGURACIÓN
+# ═══════════════════════════════════════════════════════════════════════
 st.set_page_config(
     page_title="Portafolio · Juan Pablo · Parte 2",
     page_icon="✦",
@@ -12,1104 +21,785 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ═══════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════════════
+# PALETA — "MIDNIGHT EMBER" (azul noche + ámbar cálido)
+# ═══════════════════════════════════════════════════════════════════════
+CSS = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --bg:#070b14;
+  --bg-2:#0b1220;
+  --surface:#0f1828;
+  --surface-2:#131f33;
+  --border:#1e2c44;
+  --border-2:#2b3d5c;
+  --text:#eef3fb;
+  --text-2:#c2cfe3;
+  --muted:#8a9ab4;
+  --muted-2:#5f6f8a;
+  --amber:#f5a524;
+  --amber-soft:rgba(245,165,36,.12);
+  --cyan:#4cc9e0;
+  --cyan-soft:rgba(76,201,224,.12);
+  --violet:#9d8df1;
+}
+
+html, body, [class*="css"], .stApp, button, input, textarea, select{
+  font-family:'Inter',sans-serif !important;
+  color:var(--text);
+}
+h1,h2,h3,h4,h5{font-family:'Instrument Serif',serif !important;}
+
+/* ═══ FONDO ANIMADO ═══ */
+.stApp{
+  background-color:var(--bg) !important;
+  background-image:
+    radial-gradient(ellipse 900px 520px at 12% -8%, rgba(245,165,36,.13), transparent 60%),
+    radial-gradient(ellipse 800px 500px at 88% 8%, rgba(76,201,224,.11), transparent 60%),
+    radial-gradient(ellipse 900px 600px at 50% 108%, rgba(157,141,241,.10), transparent 62%);
+  background-attachment:fixed;
+}
+.stApp::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 22%, rgba(255,255,255,.45), transparent),
+    radial-gradient(1.2px 1.2px at 78% 14%, rgba(255,255,255,.35), transparent),
+    radial-gradient(1.6px 1.6px at 33% 68%, rgba(245,165,36,.40), transparent),
+    radial-gradient(1.2px 1.2px at 66% 52%, rgba(76,201,224,.40), transparent),
+    radial-gradient(1.5px 1.5px at 88% 78%, rgba(255,255,255,.30), transparent),
+    radial-gradient(1.1px 1.1px at 46% 34%, rgba(255,255,255,.25), transparent);
+  animation:drift 26s linear infinite;
+}
+@keyframes drift{
+  0%{transform:translateY(0) translateX(0)}
+  50%{transform:translateY(-26px) translateX(12px)}
+  100%{transform:translateY(0) translateX(0)}
+}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes pulseGlow{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes sweep{0%{transform:translateX(-120%)}100%{transform:translateX(220%)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-300px 0}100%{background-position:300px 0}}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+
+#MainMenu{visibility:hidden}
+footer{visibility:hidden}
+header[data-testid="stHeader"]{background:transparent}
+.block-container{
+  padding-top:3rem !important;padding-bottom:4rem !important;
+  max-width:1260px !important;position:relative;z-index:1;
+}
+
+/* ═══ BARRA DE PROGRESO / NAVEGACIÓN ═══ */
+.progress-shell{
+  position:fixed;top:0;left:0;right:0;height:3px;z-index:9999;
+  background:rgba(30,44,68,.6);backdrop-filter:blur(6px);
+}
+.progress-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--amber),var(--cyan),var(--violet));
+  box-shadow:0 0 14px rgba(245,165,36,.7);
+  transition:width .25s ease;
+}
+.topnav{
+  position:sticky;top:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.65rem 1.1rem;margin:0 0 1rem 0;
+  background:rgba(11,18,32,.78);
+  backdrop-filter:blur(16px);
+  border:1px solid var(--border);
+  border-radius:100px;
+  box-shadow:0 10px 34px rgba(0,0,0,.42);
+}
+.topnav .brand{
+  display:flex;align-items:center;gap:.6rem;
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--text-2);
+}
+.topnav .brand b{color:var(--amber);font-weight:600}
+.nav-pills{display:flex;gap:.35rem;flex-wrap:wrap}
+.nav-pill{
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--muted);text-decoration:none !important;
+  padding:.36rem .72rem;border-radius:100px;border:1px solid transparent;
+  transition:all .25s ease;white-space:nowrap;
+}
+.nav-pill:hover{color:var(--bg);background:var(--amber);border-color:var(--amber);text-decoration:none !important;}
+.nav-pill.dim:hover{background:var(--cyan);border-color:var(--cyan);}
+.stProgress > div > div > div > div > div{background:transparent !important;}
+
+/* ═══ HERO ═══ */
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center;}
+.kicker{
+  display:inline-flex;align-items:center;gap:.7rem;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;
+  letter-spacing:.26em;text-transform:uppercase;color:var(--amber);font-weight:500;
+}
+.kicker::before{content:'';width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--amber));}
+.hero-h1{
+  font-size:4rem !important;line-height:1.02 !important;margin:.9rem 0 1.2rem 0 !important;
+  letter-spacing:-.025em !important;font-weight:400 !important;color:var(--text) !important;
+}
+.hero-h1 em{font-style:italic;color:var(--amber);}
+.hero-h1 .accent2{font-style:italic;color:var(--cyan);}
+.hero-desc{font-size:1.02rem;line-height:1.8;color:var(--text-2);font-weight:300;max-width:600px;}
+.hero-desc strong{color:var(--text);font-weight:600;}
+.part-badge{
+  display:inline-flex;align-items:center;gap:.6rem;padding:.35rem .9rem .35rem .4rem;
+  background:var(--amber-soft);border:1px solid rgba(245,165,36,.32);border-radius:100px;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:1.1rem;
+}
+.part-badge .num{
+  display:inline-flex;align-items:center;justify-content:center;width:23px;height:23px;
+  background:var(--amber);color:#1a1005;border-radius:50%;font-size:.66rem;font-weight:800;
+}
+.hero-note{
+  display:flex;gap:.8rem;padding:1rem 1.1rem;margin:1.4rem 0;
+  background:rgba(76,201,224,.07);border-left:2px solid var(--cyan);
+  border-radius:0 10px 10px 0;font-size:.9rem;line-height:1.65;color:var(--text-2);
+}
+.hero-note .icon{color:var(--cyan)}
+.hero-note b{color:var(--cyan);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{
+  display:inline-flex;align-items:center;gap:.5rem;padding:.36rem .82rem;
+  background:rgba(19,31,51,.8);border:1px solid var(--border);border-radius:100px;
+  font-size:.8rem;color:var(--text-2);
+}
+.chip::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.chip strong{color:var(--text);font-weight:600}
+.chip.amber::before{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.cta-row{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.6rem}
+.btn-cta{
+  display:inline-flex;align-items:center;gap:.55rem;padding:.6rem 1.25rem;border-radius:100px;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:600;text-decoration:none !important;transition:all .28s ease;border:1px solid transparent;
+}
+.btn-cta.primary{background:var(--amber);color:#160e02}
+.btn-cta.primary:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(245,165,36,.35);color:#160e02}
+.btn-cta.ghost{border-color:var(--border-2);color:var(--text-2)}
+.btn-cta.ghost:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-3px)}
+
+/* Retrato */
+.portrait-frame{
+  position:relative;border-radius:26px;overflow:hidden;
+  border:1px solid var(--border-2);
+  background:linear-gradient(160deg,#0f1828,#0a1120);
+  box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 90px rgba(76,201,224,.10);
+  animation:floaty 7s ease-in-out infinite;
+}
+.portrait-frame img{width:100%;display:block;border-radius:26px;}
+.portrait-ring{
+  position:absolute;inset:-2px;border-radius:28px;padding:2px;
+  background:conic-gradient(from 0deg,var(--amber),transparent 30%,var(--cyan) 55%,transparent 80%,var(--amber));
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+  animation:spinSlow 9s linear infinite;opacity:.65;
+}
+.portrait-badge{
+  position:absolute;left:16px;bottom:16px;display:flex;align-items:center;gap:.55rem;
+  padding:.45rem .85rem;border-radius:100px;
+  background:rgba(7,11,20,.82);backdrop-filter:blur(10px);
+  border:1px solid var(--border-2);
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--text-2);
+}
+.portrait-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);animation:pulseGlow 2s ease-in-out infinite;}
+.portrait-caption{
+  text-align:center;margin-top:1.3rem;font-family:'JetBrains Mono',monospace;
+  font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted-2);
+}
+.portrait-caption .star{color:var(--amber);margin:0 .6rem}
+
+/* ═══ MARCAS / STATS ═══ */
+.stat-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:3rem 0 .5rem 0;
+}
+.stat{
+  padding:1.1rem 1.2rem;border:1px solid var(--border);border-radius:16px;
+  background:linear-gradient(160deg,rgba(19,31,51,.85),rgba(11,18,32,.6));
+  transition:transform .3s ease,border-color .3s ease;
+}
+.stat:hover{transform:translateY(-4px);border-color:var(--amber)}
+.stat .v{font-family:'Instrument Serif',serif;font-size:1.9rem;color:var(--text);line-height:1}
+.stat .l{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin-top:.45rem}
+
+/* ═══ SECCIONES ═══ */
+.section-head{
+  display:flex;align-items:center;gap:1.1rem;padding-bottom:1.1rem;margin:4.5rem 0 2rem 0;
+  border-bottom:1px solid var(--border);animation:fadeUp .6s ease both;
+}
+.section-num{
+  display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:32px;padding:0 .6rem;
+  background:var(--amber-soft);border:1px solid rgba(245,165,36,.32);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.76rem;font-weight:700;color:var(--amber);flex-shrink:0;
+}
+.section-title{font-size:1.7rem !important;font-weight:400 !important;margin:0 !important;color:var(--text) !important;flex:1;letter-spacing:-.01em !important;}
+.section-count{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2)}
+.section-lede{color:var(--muted);font-size:.92rem;margin:-1.1rem 0 1.8rem 0;max-width:640px;line-height:1.7}
+
+/* ═══ TARJETA DE PROYECTO ═══ */
+.app-card{
+  display:block !important;background:var(--surface);border:1px solid var(--border);
+  border-radius:18px;text-decoration:none !important;color:var(--text) !important;
+  transition:transform .35s cubic-bezier(.2,.7,.3,1),border-color .35s ease,box-shadow .35s ease;
+  height:100%;overflow:hidden;position:relative;isolation:isolate;
+  animation:fadeUp .7s ease both;
+}
+.app-card:hover{
+  transform:translateY(-8px) scale(1.012);
+  border-color:rgba(245,165,36,.55);
+  box-shadow:0 26px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(245,165,36,.18), 0 0 60px rgba(245,165,36,.10);
+  text-decoration:none !important;color:var(--text) !important;
+}
+.app-card::after{
+  content:'';position:absolute;inset:0;pointer-events:none;border-radius:18px;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.09) 46%,transparent 62%);
+  transform:translateX(-120%);transition:transform .9s ease;
+}
+.app-card:hover::after{transform:translateX(120%);}
+.app-thumb{
+  width:100%;aspect-ratio:16/10;background:linear-gradient(150deg,#0c1424,#111c30);
+  border-bottom:1px solid var(--border);position:relative;display:flex;
+  align-items:center;justify-content:center;overflow:hidden;
+}
+.app-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;transition:transform .5s ease,filter .5s ease;}
+.app-card:hover .app-thumb img{transform:scale(1.07);filter:saturate(1.12) contrast(1.03);}
+.app-thumb .glyph{
+  font-family:'Instrument Serif',serif;font-size:2rem;color:var(--muted-2);opacity:.55;
+  transition:all .35s ease;
+}
+.app-card:hover .app-thumb .glyph{opacity:0;transform:scale(.8);}
+.app-index{
+  position:absolute;top:10px;left:10px;z-index:3;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.16em;
+  padding:.28rem .55rem;border-radius:6px;background:rgba(7,11,20,.8);
+  border:1px solid var(--border-2);color:var(--amber);backdrop-filter:blur(6px);
+}
+.app-open{
+  position:absolute;top:10px;right:10px;z-index:3;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+  padding:.28rem .55rem;border-radius:6px;background:var(--amber);color:#160e02;font-weight:700;
+  opacity:0;transform:translateY(-6px);transition:all .3s ease;
+}
+.app-card:hover .app-open{opacity:1;transform:translateY(0);}
+.app-body{padding:1.3rem 1.35rem 1.45rem;}
+.app-kicker{
+  display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--cyan);font-weight:500;margin-bottom:.65rem;
+  padding:.22rem .55rem;border-radius:5px;background:var(--cyan-soft);
+}
+.app-title{font-size:1.28rem !important;font-weight:400 !important;line-height:1.28 !important;margin:0 0 .6rem 0 !important;color:var(--text) !important;}
+.app-desc{font-size:.86rem;line-height:1.68;color:var(--muted);margin:0 0 1.15rem 0;font-weight:400;}
+.app-link{
+  display:inline-flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2);font-weight:500;
+  transition:gap .25s ease,color .25s ease;
+}
+.app-card:hover .app-link{gap:.95rem;color:var(--amber);}
+.card-warm .app-kicker{color:var(--amber);background:var(--amber-soft);}
+.card-warm:hover{border-color:rgba(76,201,224,.55);}
+.card-warm:hover .app-link{color:var(--cyan);}
+.card-warm:hover .app-open{background:var(--cyan);color:#04161a;}
+
+/* ═══ EXPLORADOR INTERACTIVO ═══ */
+.explorer{
+  border:1px solid var(--border);border-radius:22px;overflow:hidden;
+  background:linear-gradient(160deg,rgba(19,31,51,.9),rgba(11,18,32,.85));
+  box-shadow:0 22px 56px rgba(0,0,0,.45);
+  animation:fadeUp .7s ease both;
+}
+.explorer-top{
+  display:flex;align-items:center;gap:.6rem;padding:.85rem 1.1rem;
+  border-bottom:1px solid var(--border);background:rgba(7,11,20,.5);
+}
+.explorer-top .dots{display:flex;gap:.35rem}
+.explorer-top .dots i{width:10px;height:10px;border-radius:50%;display:block}
+.explorer-top .dots i:nth-child(1){background:#ef5b5b}
+.explorer-top .dots i:nth-child(2){background:#f5a524}
+.explorer-top .dots i:nth-child(3){background:#4cc9e0}
+.explorer-top .path{
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted-2);margin-left:.4rem;
+}
+.explorer-body{padding:1.3rem 1.4rem;}
+.exp-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;
+}
+.exp-item{
+  border:1px solid var(--border);border-radius:14px;padding:1rem 1.05rem;
+  background:rgba(7,11,20,.55);transition:all .3s ease;position:relative;overflow:hidden;
+}
+.exp-item:hover{border-color:var(--border-2);transform:translateY(-3px);background:rgba(15,24,40,.85)}
+.exp-item .bar{height:3px;border-radius:3px;background:var(--border);margin-bottom:.75rem;overflow:hidden}
+.exp-item .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--amber),var(--cyan));border-radius:3px}
+.exp-item .t{font-family:'Instrument Serif',serif;font-size:1.05rem;color:var(--text);margin-bottom:.35rem}
+.exp-item .d{font-size:.78rem;color:var(--muted);line-height:1.55}
+
+/* Timeline */
+.timeline{position:relative;padding-left:2rem;margin-top:.5rem}
+.timeline::before{
+  content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(180deg,var(--amber),var(--cyan),transparent);
+}
+.tl-item{position:relative;padding:0 0 1.6rem 0;animation:fadeUp .6s ease both}
+.tl-item::before{
+  content:'';position:absolute;left:-2rem;top:5px;width:16px;height:16px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--amber);box-shadow:0 0 0 4px rgba(245,165,36,.10);
+}
+.tl-item:last-child::before{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(76,201,224,.10)}
+.tl-stage{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:.3rem}
+.tl-title{font-family:'Instrument Serif',serif;font-size:1.1rem;color:var(--text);margin-bottom:.25rem}
+.tl-desc{font-size:.83rem;color:var(--muted);line-height:1.6}
+
+/* Filtros */
+.filter-bar{
+  display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;
+  padding:1rem 1.1rem;border:1px solid var(--border);border-radius:16px;
+  background:rgba(11,18,32,.7);margin-bottom:1.6rem;
+}
+.filter-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-2);margin-right:.3rem}
+.filter-btn{
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.42rem .85rem;border-radius:100px;border:1px solid var(--border);
+  background:rgba(19,31,51,.7);color:var(--text-2);cursor:pointer;transition:all .25s ease;
+}
+.filter-btn:hover{border-color:var(--amber);color:var(--amber);transform:translateY(-2px)}
+.filter-btn.active{background:var(--amber);color:#160e02;border-color:var(--amber);font-weight:700}
+
+/* ═══ FOOTER ═══ */
+.footer{text-align:center;padding:3.5rem 0 1rem 0;margin-top:5rem;border-top:1px solid var(--border)}
+.footer-ornament{font-family:'Instrument Serif',serif;font-size:1.4rem;color:var(--amber);margin-bottom:1rem;display:block;letter-spacing:1rem}
+.footer-text{font-family:'Instrument Serif',serif;font-size:1.15rem;font-style:italic;color:var(--text);margin:0 0 .45rem 0}
+.footer-sub{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-2);margin:0}
+
+/* Utilidades */
+.stMarkdown a{text-decoration:none !important;}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border-2);border:2px solid var(--bg);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--amber)}
+.glow-text{text-shadow:0 0 26px rgba(245,165,36,.35)}
+.stButton > button{
+  border-radius:100px !important;border:1px solid var(--border-2) !important;
+  background:rgba(19,31,51,.8) !important;color:var(--text-2) !important;
+  font-family:'JetBrains Mono',monospace !important;font-size:.7rem !important;
+  letter-spacing:.13em !important;text-transform:uppercase;transition:all .28s ease !important;
+}
+.stButton > button:hover{
+  border-color:var(--amber) !important;color:var(--amber) !important;
+  transform:translateY(-3px) !important;box-shadow:0 10px 26px rgba(0,0,0,.4) !important;
+}
+.stButton > button[kind="primary"]{
+  background:var(--amber) !important;color:#160e02 !important;border-color:var(--amber) !important;font-weight:700;
+}
+
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;gap:2rem}
+  .hero-h1{font-size:2.6rem !important}
+  .stat-strip{grid-template-columns:repeat(2,1fr)}
+  .exp-row{grid-template-columns:1fr}
+  .section-title{font-size:1.35rem !important}
+  .section-count{display:none}
+  .nav-pills{display:none}
+}
+</style>
+"""
+
+st.markdown(CSS, unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════
 # HELPERS
-# ═══════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════════════
 def get_image_base64(path):
     """Convierte una imagen local a Base64 para inyectarla en HTML."""
-    if os.path.exists(path):
-        try:
+    try:
+        if os.path.exists(path):
             with open(path, "rb") as f:
                 data = base64.b64encode(f.read()).decode("utf-8")
-                ext = path.split(".")[-1].lower()
-                mime = "image/png" if ext == "png" else "image/jpeg"
-                return f"data:{mime};base64,{data}"
-        except Exception:
-            return ""
+                ext = os.path.splitext(path)[1].lower().lstrip(".") or "png"
+                if ext == "jpg":
+                    ext = "jpeg"
+                return f"data:image/{ext};base64,{data}"
+    except Exception:
+        pass
     return ""
 
 
-def render_thumb(image_path, title):
-    b64 = get_image_base64(image_path)
-    if b64:
-        return f'<img src="{b64}" alt="{title}" draggable="false" loading="lazy" />'
-    return '<div class="app-thumb-placeholder">◇</div>'
+def esc(text):
+    return html_lib.escape(str(text))
 
 
-def render_card(kicker, title, desc, url, image_path):
-    thumb_html = render_thumb(image_path, title)
-    return f"""
-    <a href="{url}" target="_blank" rel="noopener noreferrer" class="app-card" draggable="false">
-        <div class="card-glow"></div>
-        <div class="app-thumb">
-            {thumb_html}
-            <div class="app-thumb-overlay">
-                <span class="thumb-badge">streamlit.app ↗</span>
-            </div>
-        </div>
-        <div class="app-body">
-            <span class="app-kicker">{kicker}</span>
-            <h3 class="app-title">{title}</h3>
-            <p class="app-desc">{desc}</p>
-            <span class="app-link">
-                Abrir aplicación <span class="app-link-arrow">→</span>
-            </span>
-        </div>
-    </a>
-    """
-
-
-def render_carousel(carousel_id, cards_html):
-    cards_joined = "\n".join([f'<div class="carousel-slide">{c}</div>' for c in cards_html])
-    dots_joined = "\n".join([
-        f'<button class="carousel-dot {"is-active" if i == 0 else ""}" '
-        f'onclick="carouselGoTo(\'{carousel_id}\', {i})" aria-label="Slide {i+1}"></button>'
-        for i in range(len(cards_html))
-    ])
-    total = len(cards_html)
-    return f"""
-    <div class="carousel-wrap" id="{carousel_id}">
-        <div class="carousel-track" onscroll="updateCarouselDots('{carousel_id}', {total})">
-            {cards_joined}
-            <div class="carousel-spacer"></div>
-        </div>
-        <button class="carousel-arrow carousel-arrow-left" onclick="carouselPrev('{carousel_id}')" aria-label="Anterior">‹</button>
-        <button class="carousel-arrow carousel-arrow-right" onclick="carouselNext('{carousel_id}')" aria-label="Siguiente">›</button>
-        <div class="carousel-nav">
-            <div class="carousel-dots">{dots_joined}</div>
-            <span class="carousel-counter" id="{carousel_id}-counter">01 / {total:02d}</span>
-        </div>
+def section_header(num, title, count, lede=None):
+    st.markdown(f"""
+    <div class="section-head">
+      <span class="section-num">{esc(num)}</span>
+      <h2 class="section-title">{esc(title)}</h2>
+      <span class="section-count">{esc(count)}</span>
     </div>
+    {f'<p class="section-lede">{esc(lede)}</p>' if lede else ''}
+    """, unsafe_allow_html=True)
+
+
+def app_card(kicker, title, desc, url, image_path, index, variant=""):
+    """Tarjeta de proyecto con imagen, etiqueta y efecto hover."""
+    b64 = get_image_base64(image_path)
+    img_tag = f'<img src="{b64}" alt="{esc(title)}">' if b64 else ''
+    glyph = '' if b64 else '<span class="glyph">◇</span>'
+    warm = " card-warm" if variant == "warm" else ""
+    delay = 0.05 * int(index)
+    return f"""
+    <a href="{esc(url)}" target="_blank" class="app-card{warm}" style="animation-delay:{delay:.2f}s">
+      <div class="app-thumb">
+        <span class="app-index">{esc(index)}</span>
+        <span class="app-open">Abrir</span>
+        {img_tag}
+        {glyph}
+      </div>
+      <div class="app-body">
+        <span class="app-kicker">{esc(kicker)}</span>
+        <h3 class="app-title">{esc(title)}</h3>
+        <p class="app-desc">{esc(desc)}</p>
+        <span class="app-link">Abrir aplicación →</span>
+      </div>
+    </a>
     """
 
-# ═══════════════════════════════════════════════════════════════
-# DATOS DE LOS PROYECTOS
-# ═══════════════════════════════════════════════════════════════
-sec1_cards = [
-    render_card(
-        "NLP · Procesamiento",
-        "Procesamiento de Lenguaje",
-        "Explora cómo la IA comprende, analiza y genera lenguaje natural en español.",
-        "https://procesamientolenguajejplg-dpcdtmrteadz4zxvzn8adh.streamlit.app/",
-        "LLM1.PNG"
-    ),
-    render_card(
-        "Computer Vision",
-        "Visión artificial",
-        "Modelos de visión por computadora que reconocen imágenes, objetos y patrones.",
-        "https://visionapp-8whsafj8pj5hdiuow4yjyb.streamlit.app/",
-        "LLM2.PNG"
-    )
+
+# ═══════════════════════════════════════════════════════════════════════
+# DATOS (textos originales preservados)
+# ═══════════════════════════════════════════════════════════════════════
+SECTIONS = [
+    {
+        "num": "01",
+        "title": "Aplicaciones con LLMs",
+        "count": "2 aplicaciones",
+        "lede": "Sistemas que entienden y generan lenguaje natural: procesamiento de texto y reconocimiento visual.",
+        "items": [
+            {
+                "kicker": "NLP · Procesamiento",
+                "title": "Procesamiento de Lenguaje",
+                "desc": "Explora cómo la IA comprende, analiza y genera lenguaje natural en español.",
+                "url": "https://procesamientolenguajejplg-dpcdtmrteadz4zxvzn8adh.streamlit.app/",
+                "img": "LLM1.PNG",
+                "variant": "",
+            },
+            {
+                "kicker": "Computer Vision",
+                "title": "Visión artificial",
+                "desc": "Modelos de visión por computadora que reconocen imágenes, objetos y patrones.",
+                "url": "https://visionapp-8whsafj8pj5hdiuow4yjyb.streamlit.app/",
+                "img": "LLM2.PNG",
+                "variant": "warm",
+            },
+        ],
+    },
+    {
+        "num": "02",
+        "title": "Interacción con interfaces táctiles",
+        "count": "4 aplicaciones",
+        "lede": "Tableros que reciben trazos a mano y los convierten en instrucciones para la inteligencia artificial.",
+        "items": [
+            {
+                "kicker": "Visión + GPT",
+                "title": "Tablero inteligente",
+                "desc": "Dibuja un boceto y deja que la IA lo interprete, lo describa o lo resuelva.",
+                "url": "https://tablerotuneado-dqjtotfrqskiyeosh6youa.streamlit.app/",
+                "img": "Tablero3.PNG",
+                "variant": "warm",
+            },
+            {
+                "kicker": "Matemáticas · GPT",
+                "title": "Tablero de matemáticas",
+                "desc": "Dibuja una operación o ecuación y la IA la resuelve paso a paso con LaTeX.",
+                "url": "https://tablerotuneado-ez8ftd2kuoia7yoh7cpdhe.streamlit.app/",
+                "img": "Tablero4.PNG",
+                "variant": "",
+            },
+            {
+                "kicker": "OCR · Números",
+                "title": "Tablero que lee números",
+                "desc": "Escribe un número a mano y la IA lo reconoce e interpreta al instante.",
+                "url": "https://tactilnumeros-kdpcwepxhzeer6zvu3cq6x.streamlit.app/",
+                "img": "Tablero1.PNG",
+                "variant": "",
+            },
+            {
+                "kicker": "Canvas · Personalizable",
+                "title": "Tablero para dibujar",
+                "desc": "Un lienzo libre con herramientas y colores personalizables para crear.",
+                "url": "https://tableropersonalizado-nkqwmc7lntrdxrnqmo7nl6.streamlit.app/",
+                "img": "Tablero2.PNG",
+                "variant": "warm",
+            },
+        ],
+    },
+    {
+        "num": "03",
+        "title": "Sistemas con internet de las cosas",
+        "count": "3 aplicaciones",
+        "lede": "Dispositivos simulados, sensores y comandos de voz conectados entre Wokwi y Streamlit.",
+        "items": [
+            {
+                "kicker": "Voz · Control",
+                "title": "Control de voz",
+                "desc": "Interactúa con la aplicación usando únicamente tu voz, sin tocar el teclado.",
+                "url": "https://ctrlvoice-4zw5fqi5pmuizke4vdecw7.streamlit.app/",
+                "img": "IOT3.PNG",
+                "variant": "",
+            },
+            {
+                "kicker": "Sensor · MQTT",
+                "title": "Wokwi a Streamlit",
+                "desc": "Un sensor simulado en Wokwi envía datos a Streamlit a través de MQTT.",
+                "url": "https://lectormqtt-t59niwifyecackdckk82fx.streamlit.app/",
+                "img": "IOT1.PNG",
+                "variant": "warm",
+            },
+            {
+                "kicker": "Control · MQTT",
+                "title": "Streamlit a Wokwi",
+                "desc": "Controla dispositivos simulados en Wokwi desde una interfaz en Streamlit.",
+                "url": "https://appawokwicmqtt-spyylhsrmng4sdf5fncrty.streamlit.app/",
+                "img": "IOT2.PNG",
+                "variant": "",
+            },
+        ],
+    },
 ]
 
-sec2_cards = [
-    render_card(
-        "Visión + GPT",
-        "Tablero inteligente",
-        "Dibuja un boceto y deja que la IA lo interprete, lo describa o lo resuelva.",
-        "https://tablerotuneado-dqjtotfrqskiyeosh6youa.streamlit.app/",
-        "Tablero3.PNG"
-    ),
-    render_card(
-        "Matemáticas · GPT",
-        "Tablero de matemáticas",
-        "Dibuja una operación o ecuación y la IA la resuelve paso a paso con LaTeX.",
-        "https://tablerotuneado-ez8ftd2kuoia7yoh7cpdhe.streamlit.app/",
-        "Tablero4.PNG"
-    ),
-    render_card(
-        "OCR · Números",
-        "Tablero que lee números",
-        "Escribe un número a mano y la IA lo reconoce e interpreta al instante.",
-        "https://tactilnumeros-kdpcwepxhzeer6zvu3cq6x.streamlit.app/",
-        "Tablero1.PNG"
-    ),
-    render_card(
-        "Canvas · Personalizable",
-        "Tablero para dibujar",
-        "Un lienzo libre con herramientas y colores personalizables para crear.",
-        "https://tableropersonalizado-nkqwmc7lntrdxrnqmo7nl6.streamlit.app/",
-        "Tablero2.PNG"
-    )
-]
-
-sec3_cards = [
-    render_card(
-        "Voz · Control",
-        "Control de voz",
-        "Interactúa con la aplicación usando únicamente tu voz, sin tocar el teclado.",
-        "https://ctrlvoice-4zw5fqi5pmuizke4vdecw7.streamlit.app/",
-        "IOT3.PNG"
-    ),
-    render_card(
-        "Sensor · MQTT",
-        "Wokwi a Streamlit",
-        "Un sensor simulado en Wokwi envía datos a Streamlit a través de MQTT.",
-        "https://lectormqtt-t59niwifyecackdckk82fx.streamlit.app/",
-        "IOT1.PNG"
-    ),
-    render_card(
-        "Control · MQTT",
-        "Streamlit a Wokwi",
-        "Controla dispositivos simulados en Wokwi desde una interfaz en Streamlit.",
-        "https://appawokwicmqtt-spyylhsrmng4sdf5fncrty.streamlit.app/",
-        "IOT2.PNG"
-    )
-]
-
-# Retrato base64
-portrait_b64 = get_image_base64("yo.png")
-portrait_html = (
-    f'<img src="{portrait_b64}" alt="Juan Pablo" draggable="false" />'
-    if portrait_b64
-    else '<div class="portrait-placeholder">JP</div>'
-)
-
-# ═══════════════════════════════════════════════════════════════
-# INYECCIÓN DEL CÓDIGO COMPLETO (HTML + CSS + JS)
-# ═══════════════════════════════════════════════════════════════
-html_content = f"""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
-    :root {{
-        --bg: #070512;
-        --surface: #140c28;
-        --surface-hover: #1d1238;
-        --border: #2d1f4a;
-        --border-2: #4a3770;
-        --text: #f3ecff;
-        --text-2: #cbbfe6;
-        --muted: #9a8bb5;
-        --muted-2: #6b5a8a;
-        --violet: #c084fc;
-        --violet-2: #a855f7;
-        --pink: #f472b6;
-        --amber: #fbbf24;
-    }}
-
-    html, body, [class*="css"], .stApp {{
-        font-family: 'Inter', sans-serif !important;
-        background-color: var(--bg) !important;
-        color: var(--text) !important;
-        overflow-x: hidden !important;
-    }}
-
-    #MainMenu, footer, header[data-testid="stHeader"] {{
-        display: none !important;
-        visibility: hidden !important;
-    }}
-
-    .block-container {{
-        padding: 0 !important;
-        max-width: 100% !important;
-    }}
-
-    /* ═══ FONDO CÓSMICO Y ESTRELLAS ═══ */
-    .bg-cosmos {{
-        position: fixed;
-        inset: 0;
-        z-index: -10;
-        background:
-            radial-gradient(ellipse at 15% -10%, rgba(168, 85, 247, 0.22), transparent 50%),
-            radial-gradient(ellipse at 85% 110%, rgba(192, 132, 252, 0.14), transparent 50%),
-            radial-gradient(circle at 60% 35%, rgba(251, 191, 36, 0.05), transparent 40%),
-            radial-gradient(circle at 20% 75%, rgba(52, 211, 153, 0.05), transparent 40%),
-            radial-gradient(circle at 80% 60%, rgba(244, 114, 182, 0.06), transparent 40%),
-            #070512;
-    }}
-
-    .orb {{
-        position: fixed;
-        border-radius: 50%;
-        filter: blur(80px);
-        pointer-events: none;
-        z-index: -9;
-        opacity: 0.5;
-    }}
-    .orb-1 {{ width: 500px; height: 500px; background: radial-gradient(circle, rgba(168, 85, 247, 0.35), transparent 70%); top: -100px; left: -100px; animation: floatOrb 18s ease-in-out infinite; }}
-    .orb-2 {{ width: 600px; height: 600px; background: radial-gradient(circle, rgba(244, 114, 182, 0.2), transparent 70%); bottom: -150px; right: -100px; animation: floatOrb 22s ease-in-out infinite reverse; }}
-    @keyframes floatOrb {{
-        0%, 100% {{ transform: translate(0, 0) scale(1); }}
-        50% {{ transform: translate(40px, -30px) scale(1.08); }}
-    }}
-
-    .stars {{
-        position: fixed;
-        inset: 0;
-        z-index: -8;
-        pointer-events: none;
-        background-image:
-            radial-gradient(1.5px 1.5px at 20px 30px, rgba(255,255,255,0.8), transparent),
-            radial-gradient(1px 1px at 40px 70px, rgba(192,132,252,0.7), transparent),
-            radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.6), transparent),
-            radial-gradient(1.5px 1.5px at 160px 120px, rgba(244,114,182,0.7), transparent),
-            radial-gradient(1px 1px at 250px 160px, rgba(192,132,252,0.5), transparent),
-            radial-gradient(1.5px 1.5px at 350px 200px, rgba(255,255,255,0.5), transparent);
-        background-size: 450px 250px;
-        animation: starsMove 120s linear infinite;
-        opacity: 0.6;
-    }}
-    @keyframes starsMove {{
-        from {{ transform: translateY(0); }}
-        to {{ transform: translateY(-250px); }}
-    }}
-
-    /* ═══ SCROLL PROGRESS ═══ */
-    .scroll-progress {{
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 2px;
-        z-index: 100;
-        background: linear-gradient(90deg, var(--violet), var(--pink), var(--amber));
-        box-shadow: 0 0 10px rgba(192, 132, 252, 0.6);
-        width: 0%;
-        transition: width 0.15s ease-out;
-    }}
-
-    /* ═══ SIDE NAV ═══ */
-    .side-nav {{
-        position: fixed;
-        right: 2rem;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 40;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 1.1rem;
-    }}
-    .side-nav-dot-wrap {{
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0.25rem 0;
-        text-decoration: none !important;
-    }}
-    .side-nav-label {{
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.62rem;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: var(--muted);
-        opacity: 0;
-        transform: translateX(8px);
-        transition: all 0.3s ease;
-        white-space: nowrap;
-    }}
-    .side-nav-dot-wrap:hover .side-nav-label,
-    .side-nav-dot-wrap.is-active .side-nav-label {{
-        opacity: 1;
-        transform: translateX(0);
-        color: var(--text);
-    }}
-    .side-nav-dot {{
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: rgba(154, 139, 181, 0.4);
-        border: 1px solid rgba(154, 139, 181, 0.5);
-        transition: all 0.35s ease;
-    }}
-    .side-nav-dot-wrap:hover .side-nav-dot {{
-        background: rgba(192, 132, 252, 0.6);
-        border-color: var(--violet);
-    }}
-    .side-nav-dot-wrap.is-active .side-nav-dot {{
-        background: var(--violet);
-        border-color: var(--violet);
-        box-shadow: 0 0 12px rgba(192, 132, 252, 0.9);
-        transform: scale(1.5);
-    }}
-    @media (max-width: 1024px) {{ .side-nav {{ display: none !important; }} }}
-
-    /* ═══ CONTENEDOR PRINCIPAL ═══ */
-    .experience-wrap {{
-        max-width: 1240px;
-        margin: 0 auto;
-        padding: 4rem 1.5rem 6rem;
-    }}
-
-    /* ═══ HERO ═══ */
-    .hero-grid {{
-        display: grid;
-        grid-template-columns: 1fr 1.35fr;
-        gap: 3.5rem;
-        align-items: center;
-        min-height: 85vh;
-    }}
-    @media (max-width: 860px) {{
-        .hero-grid {{ grid-template-columns: 1fr; gap: 2.5rem; }}
-    }}
-
-    .portrait-wrap {{
-        position: relative;
-        max-width: 380px;
-        margin: 0 auto;
-    }}
-    .orbit-ring {{
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 115%;
-        height: 115%;
-        border: 1px dashed rgba(192, 132, 252, 0.3);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        animation: spin 40s linear infinite;
-        pointer-events: none;
-    }}
-    .orbit-ring::before, .orbit-ring::after {{
-        content: '✦';
-        position: absolute;
-        font-size: 1rem;
-    }}
-    .orbit-ring::before {{ top: -8px; left: 50%; transform: translateX(-50%); color: var(--violet); }}
-    .orbit-ring::after {{ bottom: -8px; left: 50%; transform: translateX(-50%); color: var(--amber); }}
-    @keyframes spin {{ from {{ transform: translate(-50%, -50%) rotate(0deg); }} to {{ transform: translate(-50%, -50%) rotate(360deg); }} }}
-
-    .portrait-frame {{
-        position: relative;
-        border-radius: 28px;
-        padding: 10px;
-        background: linear-gradient(135deg, rgba(192,132,252,0.8), rgba(168,85,247,0.3) 30%, transparent 50%, rgba(251,191,36,0.4) 80%, rgba(192,132,252,0.7));
-        background-size: 300% 300%;
-        animation: borderGlow 6s ease-in-out infinite, pulseGlow 3s ease-in-out infinite;
-    }}
-    @keyframes borderGlow {{ 0%, 100% {{ background-position: 0% 50%; }} 50% {{ background-position: 100% 50%; }} }}
-    @keyframes pulseGlow {{
-        0%, 100% {{ box-shadow: 0 0 20px rgba(192,132,252,0.3), 0 0 40px rgba(168,85,247,0.15); }}
-        50% {{ box-shadow: 0 0 30px rgba(192,132,252,0.5), 0 0 60px rgba(168,85,247,0.25); }}
-    }}
-
-    .portrait-inner {{
-        background: #fff;
-        border-radius: 22px;
-        overflow: hidden;
-        aspect-ratio: 4 / 5;
-        position: relative;
-    }}
-    .portrait-inner img {{
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }}
-    .portrait-placeholder {{
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #1d1238, #0f0a1f);
-        font-family: 'Instrument Serif', serif;
-        font-size: 4.5rem;
-        color: rgba(192, 132, 252, 0.4);
-    }}
-
-    .floating-chip {{
-        position: absolute;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.55rem 1rem;
-        background: rgba(20, 12, 40, 0.75);
-        border: 1px solid rgba(192, 132, 252, 0.35);
-        border-radius: 100px;
-        font-size: 0.74rem;
-        color: var(--text-2);
-        white-space: nowrap;
-        backdrop-filter: blur(14px);
-        box-shadow: 0 10px 30px rgba(7, 5, 18, 0.5), 0 0 20px rgba(192, 132, 252, 0.1);
-        animation: chipFloat 5s ease-in-out infinite;
-        z-index: 5;
-    }}
-    .floating-chip strong {{ color: var(--text); font-weight: 600; }}
-    .chip-1 {{ left: -3.5rem; top: 1rem; animation-delay: 0s; }}
-    .chip-2 {{ right: -2rem; top: 35%; animation-delay: 1.2s; }}
-    .chip-3 {{ left: -1.5rem; bottom: 1.5rem; animation-delay: 0.6s; }}
-    @keyframes chipFloat {{
-        0%, 100% {{ transform: translateY(0) rotate(-1deg); }}
-        50% {{ transform: translateY(-12px) rotate(1deg); }}
-    }}
-    @media (max-width: 860px) {{ .floating-chip {{ display: none !important; }} }}
-
-    .portrait-caption {{
-        text-align: center;
-        margin-top: 1.5rem;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.24em;
-        text-transform: uppercase;
-        color: var(--muted);
-    }}
-    .portrait-caption .star {{ color: var(--violet); margin: 0 0.6rem; }}
-
-    /* Textos Hero */
-    .part-badge {{
-        display: inline-flex;
-        align-items: center;
-        gap: 0.6rem;
-        padding: 0.4rem 1rem 0.4rem 0.5rem;
-        background: rgba(192, 132, 252, 0.1);
-        border: 1px solid rgba(192, 132, 252, 0.3);
-        border-radius: 100px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--violet);
-        font-weight: 600;
-        margin-bottom: 1.25rem;
-    }}
-    .part-badge .num {{
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-        background: linear-gradient(135deg, var(--violet), var(--violet-2));
-        color: var(--bg);
-        border-radius: 50%;
-        font-size: 0.7rem;
-        font-weight: 700;
-    }}
-
-    .hero-kicker {{
-        display: inline-flex;
-        align-items: center;
-        gap: 0.85rem;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.7rem;
-        letter-spacing: 0.24em;
-        text-transform: uppercase;
-        color: var(--violet);
-        font-weight: 500;
-        margin-bottom: 1.2rem;
-    }}
-    .hero-kicker::before {{
-        content: '';
-        display: inline-block;
-        width: 34px;
-        height: 1px;
-        background: var(--violet);
-    }}
-
-    .hero-h1 {{
-        font-family: 'Instrument Serif', serif !important;
-        font-size: clamp(2.8rem, 6.5vw, 4.4rem) !important;
-        line-height: 1.02 !important;
-        letter-spacing: -0.02em !important;
-        font-weight: 400 !important;
-        margin: 0 0 1.5rem 0 !important;
-        color: var(--text) !important;
-    }}
-    .hero-h1 em {{
-        font-style: italic;
-        background: linear-gradient(135deg, var(--violet), var(--pink), var(--amber));
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-    }}
-
-    .hero-desc {{
-        font-size: 1.02rem;
-        line-height: 1.75;
-        color: var(--text-2);
-        margin: 0 0 1.75rem 0;
-        max-width: 580px;
-        font-weight: 300;
-    }}
-    .hero-desc strong {{ color: var(--text); font-weight: 600; }}
-
-    .hero-note {{
-        display: flex;
-        align-items: flex-start;
-        gap: 0.85rem;
-        padding: 1rem 1.2rem;
-        background: linear-gradient(90deg, rgba(251, 191, 36, 0.08), rgba(251, 191, 36, 0.02));
-        border-left: 2px solid var(--amber);
-        border-radius: 0 10px 10px 0;
-        margin: 0 0 1.75rem 0;
-        max-width: 580px;
-        font-size: 0.9rem;
-        line-height: 1.65;
-        color: var(--text-2);
-    }}
-    .hero-note .icon {{ color: var(--amber); flex-shrink: 0; font-size: 1rem; }}
-    .hero-note b {{ color: var(--amber); font-weight: 600; }}
-
-    .chips-mobile {{
-        display: none;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-    }}
-    .chip {{
-        display: inline-flex;
-        align-items: center;
-        gap: 0.55rem;
-        padding: 0.45rem 0.95rem;
-        background: rgba(20, 12, 40, 0.6);
-        border: 1px solid var(--border);
-        border-radius: 100px;
-        font-size: 0.8rem;
-        color: var(--text-2);
-    }}
-    .chip::before {{ content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--violet); }}
-    @media (max-width: 860px) {{ .chips-mobile {{ display: flex; }} }}
-
-    .hero-stats {{
-        display: flex;
-        gap: 2rem;
-        margin-top: 2rem;
-    }}
-    .stat-num {{
-        display: block;
-        font-family: 'Instrument Serif', serif;
-        font-size: 2rem;
-        line-height: 1;
-        margin-bottom: 0.25rem;
-    }}
-    .stat-label {{
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.62rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--muted);
-    }}
-
-    /* ═══ CATEGORÍAS & CARRUSELES ═══ */
-    .category-section {{
-        position: relative;
-        padding: 6rem 0;
-        overflow: hidden;
-    }}
-
-    .bg-number {{
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        font-family: 'Instrument Serif', serif;
-        font-size: clamp(14rem, 30vw, 24rem);
-        line-height: 1;
-        color: transparent;
-        -webkit-text-stroke: 1.5px var(--sec-accent-soft, rgba(192, 132, 252, 0.15));
-        pointer-events: none;
-        user-select: none;
-        z-index: 0;
-        opacity: 0.7;
-    }}
-    .bg-number-left {{ left: -2%; }}
-    .bg-number-right {{ right: -2%; }}
-    @media (max-width: 900px) {{ .bg-number {{ display: none; }} }}
-
-    .cat-head {{
-        position: relative;
-        z-index: 1;
-        margin-bottom: 3rem;
-        max-width: 600px;
-    }}
-    .cat-head.align-right {{
-        margin-left: auto;
-        text-align: right;
-    }}
-
-    .section-num {{
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 48px;
-        height: 36px;
-        padding: 0 0.7rem;
-        background: var(--sec-accent-soft, rgba(192, 132, 252, 0.1));
-        border: 1px solid var(--sec-accent, var(--violet));
-        border-radius: 10px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--sec-accent, var(--violet));
-        letter-spacing: 0.05em;
-        margin-bottom: 1rem;
-    }}
-
-    .cat-title {{
-        font-family: 'Instrument Serif', serif !important;
-        font-size: clamp(2rem, 4.5vw, 2.8rem) !important;
-        line-height: 1.08 !important;
-        margin: 0 0 0.8rem 0 !important;
-        color: var(--text) !important;
-    }}
-
-    .cat-desc {{
-        font-size: 0.95rem;
-        line-height: 1.7;
-        color: var(--muted);
-        margin: 0 0 1rem 0;
-        font-weight: 300;
-    }}
-
-    .cat-count {{
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.66rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--sec-accent, var(--violet));
-        font-weight: 600;
-    }}
-
-    /* Track & Carrusel */
-    .carousel-wrap {{
-        position: relative;
-        z-index: 2;
-    }}
-    .carousel-track {{
-        display: flex;
-        gap: 1.5rem;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        scroll-behavior: smooth;
-        padding: 0.5rem 0.25rem 1.5rem;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }}
-    .carousel-track::-webkit-scrollbar {{ display: none; }}
-
-    .carousel-slide {{
-        scroll-snap-align: start;
-        flex: 0 0 auto;
-        width: min(380px, 82vw);
-    }}
-    @media (min-width: 768px) {{ .carousel-slide {{ width: 380px; }} }}
-    .carousel-spacer {{ flex: 0 0 1px; }}
-
-    .carousel-arrow {{
-        position: absolute;
-        top: 42%;
-        transform: translateY(-50%);
-        width: 46px;
-        height: 46px;
-        border-radius: 50%;
-        background: rgba(20, 12, 40, 0.85);
-        border: 1px solid rgba(192, 132, 252, 0.3);
-        color: var(--text);
-        font-size: 1.5rem;
-        line-height: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-        z-index: 10;
-    }}
-    .carousel-arrow:hover {{
-        background: var(--sec-accent, var(--violet));
-        color: var(--bg);
-        transform: translateY(-50%) scale(1.08);
-    }}
-    .carousel-arrow-left {{ left: -14px; }}
-    .carousel-arrow-right {{ right: -14px; }}
-    @media (max-width: 640px) {{ .carousel-arrow {{ display: none !important; }} }}
-
-    .carousel-nav {{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 1.8rem;
-    }}
-    .carousel-dots {{
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }}
-    .carousel-dot {{
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: rgba(154, 139, 181, 0.35);
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        padding: 0;
-    }}
-    .carousel-dot.is-active {{
-        width: 24px;
-        border-radius: 100px;
-        background: var(--sec-accent, var(--violet));
-        box-shadow: 0 0 10px var(--sec-accent-soft, rgba(192, 132, 252, 0.6));
-    }}
-    .carousel-counter {{
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.65rem;
-        letter-spacing: 0.15em;
-        color: var(--muted-2);
-    }}
-
-    /* ═══ TARJETAS DE PROYECTO ═══ */
-    .app-card {{
-        position: relative;
-        display: block;
-        background: linear-gradient(180deg, rgba(20, 12, 40, 0.7), rgba(15, 10, 31, 0.9));
-        border: 1px solid rgba(45, 31, 74, 0.6);
-        border-radius: 20px;
-        text-decoration: none !important;
-        color: var(--text) !important;
-        overflow: hidden;
-        transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-        backdrop-filter: blur(10px);
-        height: 100%;
-    }}
-    .app-card:hover {{
-        transform: translateY(-8px);
-        border-color: var(--sec-accent, var(--violet));
-        box-shadow: 0 25px 60px rgba(168, 85, 247, 0.25);
-        background: linear-gradient(180deg, rgba(29, 18, 56, 0.8), rgba(20, 12, 40, 0.95));
-    }}
-
-    .app-thumb {{
-        position: relative;
-        width: 100%;
-        aspect-ratio: 16 / 10;
-        background: #fff;
-        overflow: hidden;
-        border-bottom: 1px solid rgba(45, 31, 74, 0.4);
-    }}
-    .app-thumb img {{
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: top center;
-        transition: transform 0.6s ease;
-    }}
-    .app-card:hover .app-thumb img {{ transform: scale(1.06); }}
-    .app-thumb-placeholder {{
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #1d1238, #0f0a1f);
-        font-family: 'Instrument Serif', serif;
-        font-size: 3rem;
-        color: rgba(192, 132, 252, 0.5);
-    }}
-    .app-thumb-overlay {{
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, transparent 40%, rgba(7, 5, 18, 0.7) 100%);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        display: flex;
-        align-items: flex-end;
-        padding: 0.8rem;
-    }}
-    .app-card:hover .app-thumb-overlay {{ opacity: 1; }}
-    .thumb-badge {{
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.65rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.9);
-    }}
-
-    .app-body {{
-        padding: 1.4rem 1.5rem 1.6rem;
-    }}
-    .app-kicker {{
-        display: block;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.63rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--sec-accent, var(--violet));
-        font-weight: 500;
-        margin-bottom: 0.6rem;
-    }}
-    .app-title {{
-        font-family: 'Instrument Serif', serif !important;
-        font-size: 1.35rem !important;
-        line-height: 1.25 !important;
-        margin: 0 0 0.6rem 0 !important;
-        color: var(--text) !important;
-    }}
-    .app-desc {{
-        font-size: 0.86rem;
-        line-height: 1.65;
-        color: var(--muted);
-        margin: 0 0 1.25rem 0;
-        font-weight: 300;
-    }}
-    .app-link {{
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--text-2);
-        font-weight: 500;
-        transition: all 0.2s ease;
-    }}
-    .app-card:hover .app-link {{
-        gap: 0.8rem;
-        color: var(--sec-accent, var(--violet));
-    }}
-
-    /* ═══ FOOTER ═══ */
-    .experience-footer {{
-        text-align: center;
-        padding-top: 5rem;
-        margin-top: 4rem;
-        border-top: 1px solid var(--border);
-        position: relative;
-    }}
-    .footer-ornament {{
-        font-family: 'Instrument Serif', serif;
-        font-size: 1.5rem;
-        color: var(--violet);
-        margin-bottom: 1.2rem;
-        display: block;
-        letter-spacing: 0.8rem;
-    }}
-    .footer-text {{
-        font-family: 'Instrument Serif', serif;
-        font-size: 1.3rem;
-        font-style: italic;
-        color: var(--text);
-        margin: 0 0 0.5rem 0;
-    }}
-    .footer-sub {{
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin: 0;
-    }}
-    .back-top {{
-        display: inline-block;
-        margin-top: 2.5rem;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--muted-2);
-        text-decoration: none !important;
-        transition: color 0.2s ease;
-    }}
-    .back-top:hover {{ color: var(--violet); }}
-</style>
-
-<!-- ELEMENTOS DE FONDO -->
-<div class="bg-cosmos"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="stars"></div>
-<div class="scroll-progress" id="scroll-bar"></div>
-
-<!-- SIDE NAV -->
-<nav class="side-nav">
-    <a href="#inicio" class="side-nav-dot-wrap is-active" data-sec="inicio">
-        <span class="side-nav-label">Inicio</span>
-        <span class="side-nav-dot"></span>
-    </a>
-    <a href="#llms" class="side-nav-dot-wrap" data-sec="llms">
-        <span class="side-nav-label">LLMs</span>
-        <span class="side-nav-dot"></span>
-    </a>
-    <a href="#tactil" class="side-nav-dot-wrap" data-sec="tactil">
-        <span class="side-nav-label">Táctil</span>
-        <span class="side-nav-dot"></span>
-    </a>
-    <a href="#iot" class="side-nav-dot-wrap" data-sec="iot">
-        <span class="side-nav-label">IoT</span>
-        <span class="side-nav-dot"></span>
-    </a>
-    <a href="#final" class="side-nav-dot-wrap" data-sec="final">
-        <span class="side-nav-label">Final</span>
-        <span class="side-nav-dot"></span>
-    </a>
-</nav>
-
-<!-- CONTENEDOR PRINCIPAL -->
-<div class="experience-wrap">
-    <!-- HERO -->
-    <section id="inicio" class="hero-grid">
-        <div class="portrait-wrap">
-            <div class="orbit-ring"></div>
-            <div class="portrait-frame">
-                <div class="portrait-inner">
-                    {portrait_html}
-                </div>
-            </div>
-            <div class="floating-chip chip-1"><strong>EAFIT</strong> Diseño Interactivo</div>
-            <div class="floating-chip chip-2"><strong>20 años</strong> Medellín</div>
-            <div class="floating-chip chip-3"><strong>2026</strong> Multimodales</div>
-            <div class="portrait-caption">Juan Pablo<span class="star">✦</span>Parte 2 · 2026</div>
-        </div>
-        <div>
-            <div class="part-badge">
-                <span class="num">2</span>
-                <span>Segunda parte · Portafolio 2026</span>
-            </div>
-            <div class="hero-kicker">Interfaces Multimodales</div>
-            <h1 class="hero-h1">Hola, soy<br><em>Juan Pablo</em></h1>
-            <p class="hero-desc">
-                Tengo <strong>20 años</strong> y estudio <strong>Diseño Interactivo</strong>
-                en <strong>EAFIT</strong>. Esta es la <strong>segunda parte</strong> de mi
-                portafolio para la materia de <strong>Interfaces Multimodales</strong>, donde
-                reunimos los proyectos más recientes del semestre: desde modelos de lenguaje
-                hasta integraciones con hardware y visión por computadora.
-            </p>
-            <div class="hero-note">
-                <span class="icon">✦</span>
-                <span>Esta es la <b>segunda parte</b> del portafolio. Reúne las actividades más recientes del curso, incluyendo las integraciones con hardware y los tableros interactivos.</span>
-            </div>
-            <div class="chips-mobile">
-                <span class="chip"><strong>EAFIT</strong> Diseño Interactivo</span>
-                <span class="chip"><strong>20 años</strong> Medellín</span>
-                <span class="chip"><strong>2026</strong> Interfaces Multimodales</span>
-            </div>
-            <div class="hero-stats">
-                <div>
-                    <span class="stat-num" style="color: var(--violet);">9</span>
-                    <span class="stat-label">Proyectos</span>
-                </div>
-                <div>
-                    <span class="stat-num" style="color: var(--pink);">3</span>
-                    <span class="stat-label">Categorías</span>
-                </div>
-                <div>
-                    <span class="stat-num" style="color: var(--amber);">∞</span>
-                    <span class="stat-label">Curiosidad</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECCIÓN 01 · LLMs -->
-    <section id="llms" class="category-section" style="--sec-accent: var(--violet); --sec-accent-soft: rgba(192, 132, 252, 0.14);">
-        <span class="bg-number bg-number-left" aria-hidden="true">01</span>
-        <div class="cat-head">
-            <span class="section-num">01</span>
-            <h2 class="cat-title">Aplicaciones con LLMs</h2>
-            <p class="cat-desc">Modelos de lenguaje e IA generativa aplicados a la comprensión de texto y de imágenes.</p>
-            <span class="cat-count">2 aplicaciones</span>
-        </div>
-        {render_carousel("carousel-llms", sec1_cards)}
-    </section>
-
-    <!-- SECCIÓN 02 · TÁCTILES -->
-    <section id="tactil" class="category-section" style="--sec-accent: var(--pink); --sec-accent-soft: rgba(244, 114, 182, 0.14);">
-        <span class="bg-number bg-number-right" aria-hidden="true">02</span>
-        <div class="cat-head align-right">
-            <span class="section-num">02</span>
-            <h2 class="cat-title">Interacción con interfaces táctiles</h2>
-            <p class="cat-desc">Tableros digitales que combinan dibujo a mano con interpretación inteligente en tiempo real.</p>
-            <span class="cat-count">4 aplicaciones</span>
-        </div>
-        {render_carousel("carousel-tactil", sec2_cards)}
-    </section>
-
-    <!-- SECCIÓN 03 · IOT -->
-    <section id="iot" class="category-section" style="--sec-accent: var(--amber); --sec-accent-soft: rgba(251, 191, 36, 0.14);">
-        <span class="bg-number bg-number-left" aria-hidden="true">03</span>
-        <div class="cat-head">
-            <span class="section-num">03</span>
-            <h2 class="cat-title">Sistemas con internet de las cosas</h2>
-            <p class="cat-desc">Puentes entre el mundo físico y digital: voz, sensores simulados y protocolos MQTT.</p>
-            <span class="cat-count">3 aplicaciones</span>
-        </div>
-        {render_carousel("carousel-iot", sec3_cards)}
-    </section>
-
-    <!-- FOOTER -->
-    <footer id="final" class="experience-footer">
-        <span class="footer-ornament">✦ ✦ ✦</span>
-        <p class="footer-text">Hecho con curiosidad desde Medellín</p>
-        <p class="footer-sub">Juan Pablo · EAFIT · Interfaces Multimodales · Parte 2 · 2026</p>
-        <a href="#inicio" class="back-top">↑ Volver arriba</a>
-    </footer>
+# ═══════════════════════════════════════════════════════════════════════
+# BARRA DE PROGRESO + NAVEGACIÓN
+# ═══════════════════════════════════════════════════════════════════════
+st.markdown("""
+<div class="progress-shell"><div class="progress-fill" id="progressFill"></div></div>
+<div class="topnav">
+  <div class="brand"><b>✦</b> Juan Pablo · Portafolio 2026</div>
+  <nav class="nav-pills">
+    <a class="nav-pill" href="#inicio">Inicio</a>
+    <a class="nav-pill" href="#s01">01 · LLMs</a>
+    <a class="nav-pill" href="#s02">02 · Táctiles</a>
+    <a class="nav-pill" href="#s03">03 · IoT</a>
+    <a class="nav-pill dim" href="#recorrido">Recorrido</a>
+  </nav>
 </div>
-
-<!-- JAVASCRIPT NATIVO PARA CARRUSELES Y SCROLL -->
 <script>
-    function updateProgressBar() {{
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        const bar = document.getElementById('scroll-bar');
-        if (bar) bar.style.width = pct + '%';
-    }}
-    window.addEventListener('scroll', updateProgressBar, {{ passive: true }});
-
-    function carouselGoTo(id, idx) {{
-        const wrap = document.getElementById(id);
-        if (!wrap) return;
-        const track = wrap.querySelector('.carousel-track');
-        const slides = track.querySelectorAll('.carousel-slide');
-        if (slides[idx]) {{
-            track.scrollTo({{ left: slides[idx].offsetLeft - track.offsetLeft, behavior: 'smooth' }});
-        }}
-    }}
-
-    function carouselNext(id) {{
-        const wrap = document.getElementById(id);
-        if (!wrap) return;
-        const track = wrap.querySelector('.carousel-track');
-        track.scrollBy({{ left: 380, behavior: 'smooth' }});
-    }}
-
-    function carouselPrev(id) {{
-        const wrap = document.getElementById(id);
-        if (!wrap) return;
-        const track = wrap.querySelector('.carousel-track');
-        track.scrollBy({{ left: -380, behavior: 'smooth' }});
-    }}
-
-    function updateCarouselDots(id, total) {{
-        const wrap = document.getElementById(id);
-        if (!wrap) return;
-        const track = wrap.querySelector('.carousel-track');
-        const slides = Array.from(track.querySelectorAll('.carousel-slide'));
-        const scrollLeft = track.scrollLeft;
-        let closest = 0;
-        let minDist = Infinity;
-        slides.forEach((s, i) => {{
-            const dist = Math.abs(s.offsetLeft - track.offsetLeft - scrollLeft);
-            if (dist < minDist) {{
-                minDist = dist;
-                closest = i;
-            }}
-        }});
-        const dots = wrap.querySelectorAll('.carousel-dot');
-        dots.forEach((d, i) => {{
-            d.classList.toggle('is-active', i === closest);
-        }});
-        const counter = document.getElementById(id + '-counter');
-        if (counter) {{
-            counter.innerText = String(closest + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
-        }}
-    }}
+(function(){
+  var fill = document.getElementById('progressFill');
+  function upd(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var p = h > 0 ? (window.scrollY / h) * 100 : 0;
+    if(fill){ fill.style.width = Math.min(100, Math.max(0, p)) + '%'; }
+  }
+  window.addEventListener('scroll', upd, {passive:true});
+  window.addEventListener('resize', upd);
+  upd();
+  setTimeout(upd, 400);
+})();
 </script>
-"""
+""", unsafe_allow_html=True)
 
-# ── FIX CRÍTICO ──────────────────────────────────────────────
-# El parser de markdown de Streamlit considera que cualquier línea
-# con 4+ espacios iniciales es un bloque de código. Como el HTML
-# tiene líneas en blanco que "cortan" los bloques HTML, todo el
-# cuerpo terminaba renderizándose como texto plano.
-# Al hacer lstrip() por línea evitamos ese problema (CSS y JS no
-# dependen del sangrado, y HTML tampoco).
-html_content = "\n".join(line.lstrip() for line in html_content.split("\n"))
+# ═══════════════════════════════════════════════════════════════════════
+# HERO
+# ═══════════════════════════════════════════════════════════════════════
+st.markdown('<div id="inicio"></div>', unsafe_allow_html=True)
 
-st.markdown(html_content, unsafe_allow_html=True)
+left, right = st.columns([1.12, 0.88], gap="large", vertical_alignment="center")
+
+with left:
+    st.markdown("""
+    <div class="part-badge"><span class="num">2</span><span>Segunda parte · Portafolio 2026</span></div>
+    <div class="kicker">Interfaces Multimodales</div>
+    <h1 class="hero-h1">Hola, soy<br><em>Juan Pablo</em></h1>
+    <p class="hero-desc">
+      Tengo <strong>20 años</strong> y estudio <strong>Diseño Interactivo</strong>
+      en <strong>EAFIT</strong>. Esta es la <strong>segunda parte</strong> de mi
+      portafolio para la materia de <strong>Interfaces Multimodales</strong>, donde
+      reunimos los proyectos más recientes del semestre: desde modelos de lenguaje
+      hasta integraciones con hardware y visión por computadora.
+    </p>
+    <div class="hero-note">
+      <span class="icon">✦</span>
+      <span>Esta es la <b>segunda parte</b> del portafolio. Reúne las actividades más recientes del curso, incluyendo las integraciones con hardware y los tableros interactivos.</span>
+    </div>
+    <div class="chips">
+      <span class="chip"><strong>EAFIT</strong> Diseño Interactivo</span>
+      <span class="chip amber"><strong>20 años</strong> Medellín</span>
+      <span class="chip"><strong>2026</strong> Interfaces Multimodales</span>
+    </div>
+    <div class="cta-row">
+      <a class="btn-cta primary" href="#s01">Recorrer proyectos ↓</a>
+      <a class="btn-cta ghost" href="#recorrido">Ver el recorrido</a>
+    </div>
+    """, unsafe_allow_html=True)
+
+with right:
+    st.markdown("""
+    <div class="portrait-frame">
+      <div class="portrait-ring"></div>
+    </div>
+    """, unsafe_allow_html=True)
+    try:
+        st.image("yo.png", use_container_width=True)
+    except Exception:
+        st.markdown(
+            '<div style="height:420px;display:flex;align-items:center;justify-content:center;font-size:6rem;">'
+            '👋</div>',
+            unsafe_allow_html=True,
+        )
+    st.markdown(
+        '<div class="portrait-badge"><span class="dot"></span> Disponible para nuevas ideas</div>'
+        '<div class="portrait-caption">Juan Pablo<span class="star">✦</span>Parte 2 · 2026</div>',
+        unsafe_allow_html=True,
+    )
+
+# ═══════════════════════════════════════════════════════════════════════
+# STATS
+# ═══════════════════════════════════════════════════════════════════════
+st.markdown("""
+<div class="stat-strip">
+  <div class="stat"><div class="v">9</div><div class="l">Aplicaciones</div></div>
+  <div class="stat"><div class="v">03</div><div class="l">Categorías</div></div>
+  <div class="stat"><div class="v">LLM</div><div class="l">Lenguaje y visión</div></div>
+  <div class="stat"><div class="v">IoT</div><div class="l">Hardware conectado</div></div>
+</div>
+""", unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════
+# FILTRO INTERACTIVO
+# ═══════════════════════════════════════════════════════════════════════
+st.markdown('<div id="s01"></div>', unsafe_allow_html=True)
+
+FILTERS = ["Todos", "LLMs", "Táctiles", "IoT"]
+current = st.session_state.get("filtro_actual", "Todos")
+
+if current not in FILTERS:
+    current = "Todos"
+
+# Fila de botones nativos (más fiable que JS puro en Streamlit)
+bcols = st.columns([1.4, 1, 1, 1, 4])
+with bcols[0]:
+    st.markdown(
+        '<div class="filter-label" style="display:flex;align-items:center;height:38px;">Filtrar por</div>',
+        unsafe_allow_html=True,
+    )
+for i, f in enumerate(FILTERS, start=1):
+    with bcols[i]:
+        if st.button(f, key=f"btn_{f}", use_container_width=True):
+            st.session_state["filtro_actual"] = f
+            st.rerun()
+
+st.markdown("""
+<div class="filter-bar" style="pointer-events:none;">
+  <span class="filter-label">Explorador</span>
+  <span class="filter-btn active">Todos</span>
+  <span class="filter-btn">LLMs</span>
+  <span class="filter-btn">Táctiles</span>
+  <span class="filter-btn">IoT</span>
+</div>
+""", unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════
+# SECCIONES DE PROYECTOS
+# ═══════════════════════════════════════════════════════════════════════
+sec_index = 0
+for sec in SECTIONS:
+    anchor = "s" + sec["num"]
+    st.markdown(f'<div id="{anchor}"></div>', unsafe_allow_html=True)
+    section_header(sec["num"], sec["title"], sec["count"], sec["lede"])
+
+    items = sec["items"]
+    if current != "Todos":
+        mapping = {"01": "LLMs", "02": "Táctiles", "03": "IoT"}
+        if mapping[sec["num"]] != current:
+            continue
+
+    if len(items) == 3:
+        cols = st.columns(3, gap="medium")
+    elif len(items) == 4:
+        top = st.columns(2, gap="medium")
+        bottom = st.columns(2, gap="medium")
+        cols = list(top) + list(bottom)
+    else:
+        cols = st.columns(len(items), gap="medium")
+
+    for col, item in zip(cols, items):
+        with col:
+            sec_index += 1
+            st.markdown(
+                app_card(
+                    item["kicker"],
+                    item["title"],
+                    item["desc"],
+                    item["url"],
+                    item["img"],
+                    f'{sec["num"]}.{items.index(item) + 1}',
+                    item["variant"],
+                ),
+                unsafe_allow_html=True,
+            )
+
+# ═══════════════════════════════════════════════════════════════════════
+# RECORRIDO (TIMELINE + EXPLORADOR)
+# ═══════════════════════════════════════════════════════════════════════
+st.markdown('<div id="recorrido"></div>', unsafe_allow_html=True)
+section_header("04", "El recorrido", "3 etapas", "Así se construyó esta segunda parte del portafolio, etapa por etapa.")
+
+st.markdown("""
+<div class="explorer">
+  <div class="explorer-top">
+    <div class="dots"><i></i><i></i><i></i></div>
+    <span class="path">interfaces-multimodales / parte-2</span>
+  </div>
+  <div class="explorer-body">
+    <div class="exp-row">
+      <div class="exp-item">
+        <div class="bar"><span style="width:100%"></span></div>
+        <div class="t">Lenguaje</div>
+        <div class="d">Modelos que comprenden y generan texto en español, y modelos que miran imágenes.</div>
+      </div>
+      <div class="exp-item">
+        <div class="bar"><span style="width:78%"></span></div>
+        <div class="t">Trazo</div>
+        <div class="d">Tableros táctiles donde la handwritten input se convierte en instrucciones para la IA.</div>
+      </div>
+      <div class="exp-item">
+        <div class="bar"><span style="width:56%"></span></div>
+        <div class="t">Conexión</div>
+        <div class="d">Sensores y dispositivos simulados en Wokwi hablando por MQTT con Streamlit.</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-stage">Etapa 01 · Fundamentos</div>
+        <div class="tl-title">Aplicaciones con LLMs</div>
+        <div class="tl-desc">Procesamiento de Lenguaje y Visión artificial: los primeros experimentos con modelos que interpretan contenido.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-stage">Etapa 02 · Interacción</div>
+        <div class="tl-title">Interfaces táctiles</div>
+        <div class="tl-desc">Cuatro tableros que reciben bocetos a mano: interpretar, resolver matemáticas, leer números y dibujar libremente.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-stage">Etapa 03 · Hardware</div>
+        <div class="tl-title">Internet de las cosas</div>
+        <div class="tl-desc">Control por voz y puentes de datos en ambos sentidos entre Wokwi y Streamlit mediante MQTT.</div>
+      </div>
+    </div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════
+# FOOTER
+# ═══════════════════════════════════════════════════════════════════════
+st.markdown("""
+<div class="footer">
+  <span class="footer-ornament">✦ ✦ ✦</span>
+  <p class="footer-text">Hecho con curiosidad desde Medellín</p>
+  <p class="footer-sub">Juan Pablo · EAFIT · Interfaces Multimodales · Parte 2 · 2026</p>
+</div>
+""", unsafe_allow_html=True)
