@@ -1,9 +1,10 @@
 import streamlit as st
 import base64
 import os
+import streamlit.components.v1 as components
 
 # ═══════════════════════════════════════════════════════════════
-# CONFIGURACIÓN DE PÁGINA
+# CONFIGURACIÓN
 # ═══════════════════════════════════════════════════════════════
 st.set_page_config(
     page_title="Portafolio · Juan Pablo · Parte 2",
@@ -16,7 +17,6 @@ st.set_page_config(
 # HELPERS
 # ═══════════════════════════════════════════════════════════════
 def get_image_base64(path):
-    """Convierte una imagen local a Base64 para inyectarla en HTML."""
     if os.path.exists(path):
         try:
             with open(path, "rb") as f:
@@ -59,22 +59,27 @@ def render_card(kicker, title, desc, url, image_path):
     """
 
 
+def render_grid(cards):
+    """Renderiza tarjetas en un grid responsive (sin carrusel)."""
+    return f'<div class="cards-grid">{"".join(cards)}</div>'
+
+
 def render_carousel(carousel_id, cards_html):
     cards_joined = "\n".join([f'<div class="carousel-slide">{c}</div>' for c in cards_html])
     dots_joined = "\n".join([
         f'<button class="carousel-dot {"is-active" if i == 0 else ""}" '
-        f'onclick="carouselGoTo(\'{carousel_id}\', {i})" aria-label="Slide {i+1}"></button>'
+        f'data-index="{i}" aria-label="Slide {i+1}"></button>'
         for i in range(len(cards_html))
     ])
     total = len(cards_html)
     return f"""
     <div class="carousel-wrap" id="{carousel_id}">
-        <div class="carousel-track" onscroll="updateCarouselDots('{carousel_id}', {total})">
+        <div class="carousel-track">
             {cards_joined}
             <div class="carousel-spacer"></div>
         </div>
-        <button class="carousel-arrow carousel-arrow-left" onclick="carouselPrev('{carousel_id}')" aria-label="Anterior">‹</button>
-        <button class="carousel-arrow carousel-arrow-right" onclick="carouselNext('{carousel_id}')" aria-label="Siguiente">›</button>
+        <button class="carousel-arrow carousel-arrow-left" aria-label="Anterior">‹</button>
+        <button class="carousel-arrow carousel-arrow-right" aria-label="Siguiente">›</button>
         <div class="carousel-nav">
             <div class="carousel-dots">{dots_joined}</div>
             <span class="carousel-counter" id="{carousel_id}-counter">01 / {total:02d}</span>
@@ -82,95 +87,58 @@ def render_carousel(carousel_id, cards_html):
     </div>
     """
 
+
 # ═══════════════════════════════════════════════════════════════
-# DATOS DE LOS PROYECTOS
+# DATOS
 # ═══════════════════════════════════════════════════════════════
 sec1_cards = [
-    render_card(
-        "NLP · Procesamiento",
-        "Procesamiento de Lenguaje",
-        "Explora cómo la IA comprende, analiza y genera lenguaje natural en español.",
-        "https://procesamientolenguajejplg-dpcdtmrteadz4zxvzn8adh.streamlit.app/",
-        "LLM1.PNG"
-    ),
-    render_card(
-        "Computer Vision",
-        "Visión artificial",
-        "Modelos de visión por computadora que reconocen imágenes, objetos y patrones.",
-        "https://visionapp-8whsafj8pj5hdiuow4yjyb.streamlit.app/",
-        "LLM2.PNG"
-    )
+    render_card("NLP · Procesamiento", "Procesamiento de Lenguaje",
+                "Explora cómo la IA comprende, analiza y genera lenguaje natural en español.",
+                "https://procesamientolenguajejplg-dpcdtmrteadz4zxvzn8adh.streamlit.app/", "LLM1.PNG"),
+    render_card("Computer Vision", "Visión artificial",
+                "Modelos de visión por computadora que reconocen imágenes, objetos y patrones.",
+                "https://visionapp-8whsafj8pj5hdiuow4yjyb.streamlit.app/", "LLM2.PNG"),
 ]
 
 sec2_cards = [
-    render_card(
-        "Visión + GPT",
-        "Tablero inteligente",
-        "Dibuja un boceto y deja que la IA lo interprete, lo describa o lo resuelva.",
-        "https://tablerotuneado-dqjtotfrqskiyeosh6youa.streamlit.app/",
-        "Tablero3.PNG"
-    ),
-    render_card(
-        "Matemáticas · GPT",
-        "Tablero de matemáticas",
-        "Dibuja una operación o ecuación y la IA la resuelve paso a paso con LaTeX.",
-        "https://tablerotuneado-ez8ftd2kuoia7yoh7cpdhe.streamlit.app/",
-        "Tablero4.PNG"
-    ),
-    render_card(
-        "OCR · Números",
-        "Tablero que lee números",
-        "Escribe un número a mano y la IA lo reconoce e interpreta al instante.",
-        "https://tactilnumeros-kdpcwepxhzeer6zvu3cq6x.streamlit.app/",
-        "Tablero1.PNG"
-    ),
-    render_card(
-        "Canvas · Personalizable",
-        "Tablero para dibujar",
-        "Un lienzo libre con herramientas y colores personalizables para crear.",
-        "https://tableropersonalizado-nkqwmc7lntrdxrnqmo7nl6.streamlit.app/",
-        "Tablero2.PNG"
-    )
+    render_card("Visión + GPT", "Tablero inteligente",
+                "Dibuja un boceto y deja que la IA lo interprete, lo describa o lo resuelva.",
+                "https://tablerotuneado-dqjtotfrqskiyeosh6youa.streamlit.app/", "Tablero3.PNG"),
+    render_card("Matemáticas · GPT", "Tablero de matemáticas",
+                "Dibuja una operación o ecuación y la IA la resuelve paso a paso con LaTeX.",
+                "https://tablerotuneado-ez8ftd2kuoia7yoh7cpdhe.streamlit.app/", "Tablero4.PNG"),
+    render_card("OCR · Números", "Tablero que lee números",
+                "Escribe un número a mano y la IA lo reconoce e interpreta al instante.",
+                "https://tactilnumeros-kdpcwepxhzeer6zvu3cq6x.streamlit.app/", "Tablero1.PNG"),
+    render_card("Canvas · Personalizable", "Tablero para dibujar",
+                "Un lienzo libre con herramientas y colores personalizables para crear.",
+                "https://tableropersonalizado-nkqwmc7lntrdxrnqmo7nl6.streamlit.app/", "Tablero2.PNG"),
 ]
 
 sec3_cards = [
-    render_card(
-        "Voz · Control",
-        "Control de voz",
-        "Interactúa con la aplicación usando únicamente tu voz, sin tocar el teclado.",
-        "https://ctrlvoice-4zw5fqi5pmuizke4vdecw7.streamlit.app/",
-        "IOT3.PNG"
-    ),
-    render_card(
-        "Sensor · MQTT",
-        "Wokwi a Streamlit",
-        "Un sensor simulado en Wokwi envía datos a Streamlit a través de MQTT.",
-        "https://lectormqtt-t59niwifyecackdckk82fx.streamlit.app/",
-        "IOT1.PNG"
-    ),
-    render_card(
-        "Control · MQTT",
-        "Streamlit a Wokwi",
-        "Controla dispositivos simulados en Wokwi desde una interfaz en Streamlit.",
-        "https://appawokwicmqtt-spyylhsrmng4sdf5fncrty.streamlit.app/",
-        "IOT2.PNG"
-    )
+    render_card("Voz · Control", "Control de voz",
+                "Interactúa con la aplicación usando únicamente tu voz, sin tocar el teclado.",
+                "https://ctrlvoice-4zw5fqi5pmuizke4vdecw7.streamlit.app/", "IOT3.PNG"),
+    render_card("Sensor · MQTT", "Wokwi a Streamlit",
+                "Un sensor simulado en Wokwi envía datos a Streamlit a través de MQTT.",
+                "https://lectormqtt-t59niwifyecackdckk82fx.streamlit.app/", "IOT1.PNG"),
+    render_card("Control · MQTT", "Streamlit a Wokwi",
+                "Controla dispositivos simulados en Wokwi desde una interfaz en Streamlit.",
+                "https://appawokwicmqtt-spyylhsrmng4sdf5fncrty.streamlit.app/", "IOT2.PNG"),
 ]
 
-# Retrato base64
 portrait_b64 = get_image_base64("yo.png")
 portrait_html = (
     f'<img src="{portrait_b64}" alt="Juan Pablo" draggable="false" />'
-    if portrait_b64
-    else '<div class="portrait-placeholder">JP</div>'
+    if portrait_b64 else '<div class="portrait-placeholder">JP</div>'
 )
 
 # ═══════════════════════════════════════════════════════════════
-# INYECCIÓN DEL CÓDIGO COMPLETO (HTML + CSS + JS)
+# HTML + CSS  (sin JS — el JS va aparte en components.html)
 # ═══════════════════════════════════════════════════════════════
 html_content = f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
     :root {{
         --bg: #070512;
@@ -205,7 +173,7 @@ html_content = f"""
         max-width: 100% !important;
     }}
 
-    /* ═══ FONDO CÓSMICO Y ESTRELLAS ═══ */
+    /* ═══════ FONDO CÓSMICO MULTICAPA ═══════ */
     .bg-cosmos {{
         position: fixed;
         inset: 0;
@@ -219,26 +187,58 @@ html_content = f"""
             #070512;
     }}
 
+    .mouse-glow {{
+        position: fixed;
+        top: 0; left: 0;
+        width: 520px; height: 520px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(192, 132, 252, 0.13), rgba(192,132,252,0.04) 40%, transparent 65%);
+        pointer-events: none;
+        z-index: -6;
+        transform: translate3d(calc(var(--mx, 50vw) - 260px), calc(var(--my, 50vh) - 260px), 0);
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        filter: blur(20px);
+        will-change: transform;
+    }}
+
     .orb {{
         position: fixed;
         border-radius: 50%;
-        filter: blur(80px);
+        filter: blur(90px);
         pointer-events: none;
         z-index: -9;
-        opacity: 0.5;
+        opacity: 0.55;
+        will-change: translate, transform;
     }}
-    .orb-1 {{ width: 500px; height: 500px; background: radial-gradient(circle, rgba(168, 85, 247, 0.35), transparent 70%); top: -100px; left: -100px; animation: floatOrb 18s ease-in-out infinite; }}
-    .orb-2 {{ width: 600px; height: 600px; background: radial-gradient(circle, rgba(244, 114, 182, 0.2), transparent 70%); bottom: -150px; right: -100px; animation: floatOrb 22s ease-in-out infinite reverse; }}
+    .orb-1 {{
+        width: 520px; height: 520px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.4), transparent 70%);
+        top: -120px; left: -120px;
+        animation: floatOrb 20s ease-in-out infinite;
+        translate: var(--px, 0) var(--py, 0);
+        transition: translate 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }}
+    .orb-2 {{
+        width: 620px; height: 620px;
+        background: radial-gradient(circle, rgba(244, 114, 182, 0.25), transparent 70%);
+        bottom: -180px; right: -120px;
+        animation: floatOrb 26s ease-in-out infinite reverse;
+        translate: var(--px, 0) var(--py, 0);
+        transition: translate 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }}
     @keyframes floatOrb {{
         0%, 100% {{ transform: translate(0, 0) scale(1); }}
         50% {{ transform: translate(40px, -30px) scale(1.08); }}
     }}
 
-    .stars {{
+    .stars, .stars-2 {{
         position: fixed;
         inset: 0;
-        z-index: -8;
         pointer-events: none;
+        background-repeat: repeat;
+    }}
+    .stars {{
+        z-index: -8;
         background-image:
             radial-gradient(1.5px 1.5px at 20px 30px, rgba(255,255,255,0.8), transparent),
             radial-gradient(1px 1px at 40px 70px, rgba(192,132,252,0.7), transparent),
@@ -248,18 +248,62 @@ html_content = f"""
             radial-gradient(1.5px 1.5px at 350px 200px, rgba(255,255,255,0.5), transparent);
         background-size: 450px 250px;
         animation: starsMove 120s linear infinite;
-        opacity: 0.6;
+        opacity: 0.65;
+    }}
+    .stars-2 {{
+        z-index: -7;
+        background-image:
+            radial-gradient(1px 1px at 60px 40px, rgba(251,191,36,0.55), transparent),
+            radial-gradient(1.2px 1.2px at 180px 90px, rgba(255,255,255,0.4), transparent),
+            radial-gradient(1px 1px at 300px 150px, rgba(192,132,252,0.5), transparent);
+        background-size: 340px 220px;
+        animation: starsMove 75s linear infinite reverse;
+        opacity: 0.5;
     }}
     @keyframes starsMove {{
         from {{ transform: translateY(0); }}
         to {{ transform: translateY(-250px); }}
     }}
 
-    /* ═══ SCROLL PROGRESS ═══ */
+    .grid-overlay {{
+        position: fixed;
+        inset: 0;
+        z-index: -7;
+        pointer-events: none;
+        background-image:
+            linear-gradient(rgba(192, 132, 252, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(192, 132, 252, 0.04) 1px, transparent 1px);
+        background-size: 90px 90px;
+        mask-image: radial-gradient(ellipse at 50% 40%, black 15%, transparent 70%);
+        -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 15%, transparent 70%);
+    }}
+
+    .shooting-star {{
+        position: fixed;
+        top: 15%;
+        left: -120px;
+        width: 120px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--violet), transparent);
+        border-radius: 100px;
+        filter: blur(0.5px);
+        z-index: -6;
+        pointer-events: none;
+        opacity: 0;
+        animation: shoot 12s linear infinite;
+    }}
+    .shooting-star.s2 {{ top: 55%; animation-delay: 4s; animation-duration: 16s; }}
+    .shooting-star.s3 {{ top: 80%; animation-delay: 8s; animation-duration: 20s; background: linear-gradient(90deg, transparent, var(--amber), transparent); }}
+    @keyframes shoot {{
+        0%, 88% {{ opacity: 0; transform: translate(0, 0) rotate(18deg); }}
+        90% {{ opacity: 1; }}
+        100% {{ opacity: 0; transform: translate(115vw, 45vh) rotate(18deg); }}
+    }}
+
+    /* ═══════ SCROLL PROGRESS ═══════ */
     .scroll-progress {{
         position: fixed;
-        top: 0;
-        left: 0;
+        top: 0; left: 0;
         height: 2px;
         z-index: 100;
         background: linear-gradient(90deg, var(--violet), var(--pink), var(--amber));
@@ -268,49 +312,37 @@ html_content = f"""
         transition: width 0.15s ease-out;
     }}
 
-    /* ═══ SIDE NAV ═══ */
+    /* ═══════ SIDE NAV ═══════ */
     .side-nav {{
         position: fixed;
-        right: 2rem;
+        right: 2.25rem;
         top: 50%;
         transform: translateY(-50%);
         z-index: 40;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        gap: 1.1rem;
+        gap: 1.2rem;
     }}
     .side-nav-dot-wrap {{
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0.25rem 0;
-        text-decoration: none !important;
+        display: flex; align-items: center; gap: 0.7rem;
+        background: none; border: none; cursor: pointer;
+        padding: 0.3rem 0; text-decoration: none !important;
     }}
     .side-nav-label {{
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.62rem;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
+        font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase;
         color: var(--muted);
-        opacity: 0;
-        transform: translateX(8px);
+        opacity: 0; transform: translateX(8px);
         transition: all 0.3s ease;
         white-space: nowrap;
     }}
     .side-nav-dot-wrap:hover .side-nav-label,
     .side-nav-dot-wrap.is-active .side-nav-label {{
-        opacity: 1;
-        transform: translateX(0);
-        color: var(--text);
+        opacity: 1; transform: translateX(0); color: var(--text);
     }}
     .side-nav-dot {{
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
+        width: 8px; height: 8px; border-radius: 50%;
         background: rgba(154, 139, 181, 0.4);
         border: 1px solid rgba(154, 139, 181, 0.5);
         transition: all 0.35s ease;
@@ -320,43 +352,39 @@ html_content = f"""
         border-color: var(--violet);
     }}
     .side-nav-dot-wrap.is-active .side-nav-dot {{
-        background: var(--violet);
-        border-color: var(--violet);
+        background: var(--violet); border-color: var(--violet);
         box-shadow: 0 0 12px rgba(192, 132, 252, 0.9);
         transform: scale(1.5);
     }}
     @media (max-width: 1024px) {{ .side-nav {{ display: none !important; }} }}
 
-    /* ═══ CONTENEDOR PRINCIPAL ═══ */
+    /* ═══════ CONTENEDOR PRINCIPAL ═══════ */
     .experience-wrap {{
         max-width: 1240px;
         margin: 0 auto;
-        padding: 4rem 1.5rem 6rem;
+        padding: 5rem 2rem 9rem;
     }}
 
-    /* ═══ HERO ═══ */
+    /* ═══════ HERO ═══════ */
     .hero-grid {{
         display: grid;
-        grid-template-columns: 1fr 1.35fr;
-        gap: 3.5rem;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 4rem;
         align-items: center;
-        min-height: 85vh;
+        min-height: 82vh;
     }}
     @media (max-width: 860px) {{
-        .hero-grid {{ grid-template-columns: 1fr; gap: 2.5rem; }}
+        .hero-grid {{ grid-template-columns: 1fr; gap: 3rem; }}
     }}
 
     .portrait-wrap {{
         position: relative;
-        max-width: 380px;
+        max-width: 460px;
         margin: 0 auto;
     }}
     .orbit-ring {{
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 115%;
-        height: 115%;
+        position: absolute; top: 50%; left: 50%;
+        width: 116%; height: 116%;
         border: 1px dashed rgba(192, 132, 252, 0.3);
         border-radius: 50%;
         transform: translate(-50%, -50%);
@@ -364,9 +392,7 @@ html_content = f"""
         pointer-events: none;
     }}
     .orbit-ring::before, .orbit-ring::after {{
-        content: '✦';
-        position: absolute;
-        font-size: 1rem;
+        content: '✦'; position: absolute; font-size: 1rem;
     }}
     .orbit-ring::before {{ top: -8px; left: 50%; transform: translateX(-50%); color: var(--violet); }}
     .orbit-ring::after {{ bottom: -8px; left: 50%; transform: translateX(-50%); color: var(--amber); }}
@@ -374,8 +400,8 @@ html_content = f"""
 
     .portrait-frame {{
         position: relative;
-        border-radius: 28px;
-        padding: 10px;
+        border-radius: 30px;
+        padding: 12px;
         background: linear-gradient(135deg, rgba(192,132,252,0.8), rgba(168,85,247,0.3) 30%, transparent 50%, rgba(251,191,36,0.4) 80%, rgba(192,132,252,0.7));
         background-size: 300% 300%;
         animation: borderGlow 6s ease-in-out infinite, pulseGlow 3s ease-in-out infinite;
@@ -393,31 +419,21 @@ html_content = f"""
         aspect-ratio: 4 / 5;
         position: relative;
     }}
-    .portrait-inner img {{
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }}
+    .portrait-inner img {{ width: 100%; height: 100%; object-fit: cover; display: block; }}
     .portrait-placeholder {{
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
         background: linear-gradient(135deg, #1d1238, #0f0a1f);
-        font-family: 'Instrument Serif', serif;
-        font-size: 4.5rem;
+        font-family: 'Fraunces', serif;
+        font-size: 5rem;
         color: rgba(192, 132, 252, 0.4);
     }}
 
     .floating-chip {{
         position: absolute;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.55rem 1rem;
-        background: rgba(20, 12, 40, 0.75);
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        padding: 0.6rem 1.1rem;
+        background: rgba(20, 12, 40, 0.8);
         border: 1px solid rgba(192, 132, 252, 0.35);
         border-radius: 100px;
         font-size: 0.74rem;
@@ -429,9 +445,9 @@ html_content = f"""
         z-index: 5;
     }}
     .floating-chip strong {{ color: var(--text); font-weight: 600; }}
-    .chip-1 {{ left: -3.5rem; top: 1rem; animation-delay: 0s; }}
-    .chip-2 {{ right: -2rem; top: 35%; animation-delay: 1.2s; }}
-    .chip-3 {{ left: -1.5rem; bottom: 1.5rem; animation-delay: 0.6s; }}
+    .chip-1 {{ left: -4rem; top: 1rem; animation-delay: 0s; }}
+    .chip-2 {{ right: -2.5rem; top: 35%; animation-delay: 1.2s; }}
+    .chip-3 {{ left: -2rem; bottom: 1.5rem; animation-delay: 0.6s; }}
     @keyframes chipFloat {{
         0%, 100% {{ transform: translateY(0) rotate(-1deg); }}
         50% {{ transform: translateY(-12px) rotate(1deg); }}
@@ -440,7 +456,7 @@ html_content = f"""
 
     .portrait-caption {{
         text-align: center;
-        margin-top: 1.5rem;
+        margin-top: 1.75rem;
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.68rem;
         letter-spacing: 0.24em;
@@ -449,67 +465,52 @@ html_content = f"""
     }}
     .portrait-caption .star {{ color: var(--violet); margin: 0 0.6rem; }}
 
-    /* Textos Hero */
+    /* HERO TEXTOS */
     .part-badge {{
-        display: inline-flex;
-        align-items: center;
-        gap: 0.6rem;
+        display: inline-flex; align-items: center; gap: 0.6rem;
         padding: 0.4rem 1rem 0.4rem 0.5rem;
         background: rgba(192, 132, 252, 0.1);
         border: 1px solid rgba(192, 132, 252, 0.3);
         border-radius: 100px;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--violet);
-        font-weight: 600;
-        margin-bottom: 1.25rem;
+        font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+        color: var(--violet); font-weight: 600;
+        margin-bottom: 1.5rem;
     }}
     .part-badge .num {{
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 24px; height: 24px;
         background: linear-gradient(135deg, var(--violet), var(--violet-2));
-        color: var(--bg);
-        border-radius: 50%;
-        font-size: 0.7rem;
-        font-weight: 700;
+        color: var(--bg); border-radius: 50%;
+        font-size: 0.7rem; font-weight: 700;
     }}
 
     .hero-kicker {{
-        display: inline-flex;
-        align-items: center;
-        gap: 0.85rem;
+        display: inline-flex; align-items: center; gap: 0.85rem;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.7rem;
-        letter-spacing: 0.24em;
-        text-transform: uppercase;
-        color: var(--violet);
-        font-weight: 500;
-        margin-bottom: 1.2rem;
+        font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase;
+        color: var(--violet); font-weight: 500;
+        margin-bottom: 1.4rem;
     }}
     .hero-kicker::before {{
-        content: '';
-        display: inline-block;
-        width: 34px;
-        height: 1px;
-        background: var(--violet);
+        content: ''; display: inline-block;
+        width: 34px; height: 1px; background: var(--violet);
     }}
 
+    /* ✦ NUEVA FUENTE DEL H1 ✦ */
     .hero-h1 {{
-        font-family: 'Instrument Serif', serif !important;
-        font-size: clamp(2.8rem, 6.5vw, 4.4rem) !important;
-        line-height: 1.02 !important;
-        letter-spacing: -0.02em !important;
-        font-weight: 400 !important;
-        margin: 0 0 1.5rem 0 !important;
+        font-family: 'Fraunces', serif !important;
+        font-size: clamp(3rem, 7vw, 5rem) !important;
+        line-height: 0.98 !important;
+        letter-spacing: -0.03em !important;
+        font-weight: 500 !important;
+        font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 1;
+        margin: 0 0 2rem 0 !important;
         color: var(--text) !important;
     }}
     .hero-h1 em {{
         font-style: italic;
+        font-weight: 400 !important;
         background: linear-gradient(135deg, var(--violet), var(--pink), var(--amber));
         -webkit-background-clip: text;
         background-clip: text;
@@ -517,76 +518,65 @@ html_content = f"""
     }}
 
     .hero-desc {{
-        font-size: 1.02rem;
-        line-height: 1.75;
+        font-size: 1.05rem;
+        line-height: 1.8;
         color: var(--text-2);
-        margin: 0 0 1.75rem 0;
+        margin: 0 0 2rem 0;
         max-width: 580px;
         font-weight: 300;
     }}
     .hero-desc strong {{ color: var(--text); font-weight: 600; }}
 
     .hero-note {{
-        display: flex;
-        align-items: flex-start;
-        gap: 0.85rem;
-        padding: 1rem 1.2rem;
+        display: flex; align-items: flex-start; gap: 0.85rem;
+        padding: 1.1rem 1.3rem;
         background: linear-gradient(90deg, rgba(251, 191, 36, 0.08), rgba(251, 191, 36, 0.02));
         border-left: 2px solid var(--amber);
         border-radius: 0 10px 10px 0;
-        margin: 0 0 1.75rem 0;
+        margin: 0 0 2rem 0;
         max-width: 580px;
-        font-size: 0.9rem;
-        line-height: 1.65;
+        font-size: 0.9rem; line-height: 1.7;
         color: var(--text-2);
     }}
     .hero-note .icon {{ color: var(--amber); flex-shrink: 0; font-size: 1rem; }}
     .hero-note b {{ color: var(--amber); font-weight: 600; }}
 
     .chips-mobile {{
-        display: none;
-        flex-wrap: wrap;
-        gap: 0.5rem;
+        display: none; flex-wrap: wrap; gap: 0.5rem;
         margin-bottom: 1.5rem;
     }}
     .chip {{
-        display: inline-flex;
-        align-items: center;
-        gap: 0.55rem;
+        display: inline-flex; align-items: center; gap: 0.55rem;
         padding: 0.45rem 0.95rem;
         background: rgba(20, 12, 40, 0.6);
         border: 1px solid var(--border);
         border-radius: 100px;
-        font-size: 0.8rem;
-        color: var(--text-2);
+        font-size: 0.8rem; color: var(--text-2);
     }}
     .chip::before {{ content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--violet); }}
     @media (max-width: 860px) {{ .chips-mobile {{ display: flex; }} }}
 
     .hero-stats {{
-        display: flex;
-        gap: 2rem;
-        margin-top: 2rem;
+        display: flex; gap: 2.5rem;
+        margin-top: 2.5rem;
     }}
     .stat-num {{
         display: block;
-        font-family: 'Instrument Serif', serif;
-        font-size: 2rem;
-        line-height: 1;
-        margin-bottom: 0.25rem;
+        font-family: 'Fraunces', serif;
+        font-size: 2.2rem; line-height: 1;
+        margin-bottom: 0.35rem;
+        font-weight: 500;
     }}
     .stat-label {{
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.62rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
+        font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
         color: var(--muted);
     }}
 
-    /* ═══ CATEGORÍAS & CARRUSELES ═══ */
+    /* ═══════ SECCIONES ═══════ */
     .category-section {{
         position: relative;
-        padding: 6rem 0;
+        padding: 8rem 0;
         overflow: hidden;
     }}
 
@@ -594,7 +584,7 @@ html_content = f"""
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        font-family: 'Instrument Serif', serif;
+        font-family: 'Fraunces', serif;
         font-size: clamp(14rem, 30vw, 24rem);
         line-height: 1;
         color: transparent;
@@ -611,69 +601,67 @@ html_content = f"""
     .cat-head {{
         position: relative;
         z-index: 1;
-        margin-bottom: 3rem;
-        max-width: 600px;
+        margin-bottom: 4rem;
+        max-width: 620px;
     }}
-    .cat-head.align-right {{
-        margin-left: auto;
-        text-align: right;
-    }}
+    .cat-head.align-right {{ margin-left: auto; text-align: right; }}
 
     .section-num {{
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 48px;
-        height: 36px;
-        padding: 0 0.7rem;
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 48px; height: 36px; padding: 0 0.7rem;
         background: var(--sec-accent-soft, rgba(192, 132, 252, 0.1));
         border: 1px solid var(--sec-accent, var(--violet));
         border-radius: 10px;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.8rem;
-        font-weight: 600;
+        font-size: 0.8rem; font-weight: 600;
         color: var(--sec-accent, var(--violet));
         letter-spacing: 0.05em;
-        margin-bottom: 1rem;
+        margin-bottom: 1.25rem;
     }}
 
     .cat-title {{
         font-family: 'Instrument Serif', serif !important;
-        font-size: clamp(2rem, 4.5vw, 2.8rem) !important;
-        line-height: 1.08 !important;
-        margin: 0 0 0.8rem 0 !important;
+        font-size: clamp(2rem, 4.5vw, 2.9rem) !important;
+        line-height: 1.1 !important;
+        margin: 0 0 1rem 0 !important;
         color: var(--text) !important;
     }}
 
     .cat-desc {{
-        font-size: 0.95rem;
-        line-height: 1.7;
+        font-size: 0.98rem; line-height: 1.75;
         color: var(--muted);
-        margin: 0 0 1rem 0;
+        margin: 0 0 1.25rem 0;
         font-weight: 300;
     }}
 
     .cat-count {{
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.66rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
+        font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase;
         color: var(--sec-accent, var(--violet));
         font-weight: 600;
     }}
 
-    /* Track & Carrusel */
-    .carousel-wrap {{
+    /* ═══════ GRID (reemplazo de carrusel 1 y 2) ═══════ */
+    .cards-grid {{
         position: relative;
         z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 2rem;
     }}
+    @media (max-width: 720px) {{
+        .cards-grid {{ grid-template-columns: 1fr; gap: 1.5rem; }}
+    }}
+
+    /* ═══════ CARRUSEL (solo sección 3) ═══════ */
+    .carousel-wrap {{ position: relative; z-index: 2; }}
     .carousel-track {{
         display: flex;
-        gap: 1.5rem;
+        gap: 1.75rem;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
-        padding: 0.5rem 0.25rem 1.5rem;
+        padding: 0.5rem 0.25rem 1.75rem;
         -ms-overflow-style: none;
         scrollbar-width: none;
     }}
@@ -691,17 +679,13 @@ html_content = f"""
         position: absolute;
         top: 42%;
         transform: translateY(-50%);
-        width: 46px;
-        height: 46px;
+        width: 48px; height: 48px;
         border-radius: 50%;
-        background: rgba(20, 12, 40, 0.85);
-        border: 1px solid rgba(192, 132, 252, 0.3);
+        background: rgba(20, 12, 40, 0.9);
+        border: 1px solid rgba(192, 132, 252, 0.35);
         color: var(--text);
-        font-size: 1.5rem;
-        line-height: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        font-size: 1.5rem; line-height: 1;
+        display: flex; align-items: center; justify-content: center;
         cursor: pointer;
         backdrop-filter: blur(10px);
         transition: all 0.3s ease;
@@ -712,49 +696,35 @@ html_content = f"""
         color: var(--bg);
         transform: translateY(-50%) scale(1.08);
     }}
-    .carousel-arrow-left {{ left: -14px; }}
-    .carousel-arrow-right {{ right: -14px; }}
+    .carousel-arrow-left {{ left: -16px; }}
+    .carousel-arrow-right {{ right: -16px; }}
     @media (max-width: 640px) {{ .carousel-arrow {{ display: none !important; }} }}
 
     .carousel-nav {{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 1.8rem;
+        display: flex; align-items: center; justify-content: center; gap: 1rem;
+        margin-top: 2rem;
     }}
-    .carousel-dots {{
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }}
+    .carousel-dots {{ display: flex; align-items: center; gap: 0.5rem; }}
     .carousel-dot {{
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
+        width: 8px; height: 8px; border-radius: 50%;
         background: rgba(154, 139, 181, 0.35);
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        padding: 0;
+        border: none; cursor: pointer;
+        transition: all 0.3s ease; padding: 0;
     }}
     .carousel-dot.is-active {{
-        width: 24px;
-        border-radius: 100px;
+        width: 24px; border-radius: 100px;
         background: var(--sec-accent, var(--violet));
         box-shadow: 0 0 10px var(--sec-accent-soft, rgba(192, 132, 252, 0.6));
     }}
     .carousel-counter {{
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.65rem;
-        letter-spacing: 0.15em;
+        font-size: 0.65rem; letter-spacing: 0.15em;
         color: var(--muted-2);
     }}
 
-    /* ═══ TARJETAS DE PROYECTO ═══ */
+    /* ═══════ TARJETAS ═══════ */
     .app-card {{
-        position: relative;
-        display: block;
+        position: relative; display: block;
         background: linear-gradient(180deg, rgba(20, 12, 40, 0.7), rgba(15, 10, 31, 0.9));
         border: 1px solid rgba(45, 31, 74, 0.6);
         border-radius: 20px;
@@ -773,90 +743,65 @@ html_content = f"""
     }}
 
     .app-thumb {{
-        position: relative;
-        width: 100%;
+        position: relative; width: 100%;
         aspect-ratio: 16 / 10;
-        background: #fff;
-        overflow: hidden;
+        background: #fff; overflow: hidden;
         border-bottom: 1px solid rgba(45, 31, 74, 0.4);
     }}
     .app-thumb img {{
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: top center;
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        object-fit: cover; object-position: top center;
         transition: transform 0.6s ease;
     }}
     .app-card:hover .app-thumb img {{ transform: scale(1.06); }}
     .app-thumb-placeholder {{
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
         background: linear-gradient(135deg, #1d1238, #0f0a1f);
-        font-family: 'Instrument Serif', serif;
-        font-size: 3rem;
-        color: rgba(192, 132, 252, 0.5);
+        font-family: 'Fraunces', serif;
+        font-size: 3rem; color: rgba(192, 132, 252, 0.5);
     }}
     .app-thumb-overlay {{
-        position: absolute;
-        inset: 0;
+        position: absolute; inset: 0;
         background: linear-gradient(180deg, transparent 40%, rgba(7, 5, 18, 0.7) 100%);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        display: flex;
-        align-items: flex-end;
-        padding: 0.8rem;
+        opacity: 0; transition: opacity 0.4s ease;
+        display: flex; align-items: flex-end; padding: 0.8rem;
     }}
     .app-card:hover .app-thumb-overlay {{ opacity: 1; }}
     .thumb-badge {{
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.65rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
+        font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
         color: rgba(255,255,255,0.9);
     }}
 
-    .app-body {{
-        padding: 1.4rem 1.5rem 1.6rem;
-    }}
+    .app-body {{ padding: 1.5rem 1.6rem 1.7rem; }}
     .app-kicker {{
         display: block;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.63rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
+        font-size: 0.63rem; letter-spacing: 0.2em; text-transform: uppercase;
         color: var(--sec-accent, var(--violet));
         font-weight: 500;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.7rem;
     }}
     .app-title {{
         font-family: 'Instrument Serif', serif !important;
-        font-size: 1.35rem !important;
-        line-height: 1.25 !important;
-        margin: 0 0 0.6rem 0 !important;
+        font-size: 1.4rem !important;
+        line-height: 1.3 !important;
+        margin: 0 0 0.7rem 0 !important;
         color: var(--text) !important;
     }}
     .app-desc {{
-        font-size: 0.86rem;
-        line-height: 1.65;
+        font-size: 0.88rem; line-height: 1.7;
         color: var(--muted);
-        margin: 0 0 1.25rem 0;
+        margin: 0 0 1.35rem 0;
         font-weight: 300;
     }}
     .app-link {{
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
+        display: inline-flex; align-items: center; gap: 0.5rem;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--text-2);
-        font-weight: 500;
+        font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--text-2); font-weight: 500;
         transition: all 0.2s ease;
     }}
     .app-card:hover .app-link {{
@@ -864,44 +809,34 @@ html_content = f"""
         color: var(--sec-accent, var(--violet));
     }}
 
-    /* ═══ FOOTER ═══ */
+    /* ═══════ FOOTER ═══════ */
     .experience-footer {{
         text-align: center;
-        padding-top: 5rem;
-        margin-top: 4rem;
+        padding-top: 6rem;
+        margin-top: 5rem;
         border-top: 1px solid var(--border);
         position: relative;
     }}
     .footer-ornament {{
-        font-family: 'Instrument Serif', serif;
-        font-size: 1.5rem;
-        color: var(--violet);
-        margin-bottom: 1.2rem;
-        display: block;
+        font-family: 'Fraunces', serif;
+        font-size: 1.5rem; color: var(--violet);
+        margin-bottom: 1.4rem; display: block;
         letter-spacing: 0.8rem;
     }}
     .footer-text {{
         font-family: 'Instrument Serif', serif;
-        font-size: 1.3rem;
-        font-style: italic;
-        color: var(--text);
-        margin: 0 0 0.5rem 0;
+        font-size: 1.4rem; font-style: italic;
+        color: var(--text); margin: 0 0 0.6rem 0;
     }}
     .footer-sub {{
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin: 0;
+        font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+        color: var(--muted); margin: 0;
     }}
     .back-top {{
-        display: inline-block;
-        margin-top: 2.5rem;
+        display: inline-block; margin-top: 2.75rem;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.68rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
+        font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
         color: var(--muted-2);
         text-decoration: none !important;
         transition: color 0.2s ease;
@@ -909,47 +844,45 @@ html_content = f"""
     .back-top:hover {{ color: var(--violet); }}
 </style>
 
-<!-- ELEMENTOS DE FONDO -->
+<!-- FONDO -->
 <div class="bg-cosmos"></div>
+<div class="mouse-glow" id="mouse-glow"></div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="stars"></div>
+<div class="stars-2"></div>
+<div class="grid-overlay"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star s2"></div>
+<div class="shooting-star s3"></div>
 <div class="scroll-progress" id="scroll-bar"></div>
 
 <!-- SIDE NAV -->
 <nav class="side-nav">
     <a href="#inicio" class="side-nav-dot-wrap is-active" data-sec="inicio">
-        <span class="side-nav-label">Inicio</span>
-        <span class="side-nav-dot"></span>
+        <span class="side-nav-label">Inicio</span><span class="side-nav-dot"></span>
     </a>
     <a href="#llms" class="side-nav-dot-wrap" data-sec="llms">
-        <span class="side-nav-label">LLMs</span>
-        <span class="side-nav-dot"></span>
+        <span class="side-nav-label">LLMs</span><span class="side-nav-dot"></span>
     </a>
     <a href="#tactil" class="side-nav-dot-wrap" data-sec="tactil">
-        <span class="side-nav-label">Táctil</span>
-        <span class="side-nav-dot"></span>
+        <span class="side-nav-label">Táctil</span><span class="side-nav-dot"></span>
     </a>
     <a href="#iot" class="side-nav-dot-wrap" data-sec="iot">
-        <span class="side-nav-label">IoT</span>
-        <span class="side-nav-dot"></span>
+        <span class="side-nav-label">IoT</span><span class="side-nav-dot"></span>
     </a>
     <a href="#final" class="side-nav-dot-wrap" data-sec="final">
-        <span class="side-nav-label">Final</span>
-        <span class="side-nav-dot"></span>
+        <span class="side-nav-label">Final</span><span class="side-nav-dot"></span>
     </a>
 </nav>
 
-<!-- CONTENEDOR PRINCIPAL -->
 <div class="experience-wrap">
     <!-- HERO -->
     <section id="inicio" class="hero-grid">
         <div class="portrait-wrap">
             <div class="orbit-ring"></div>
             <div class="portrait-frame">
-                <div class="portrait-inner">
-                    {portrait_html}
-                </div>
+                <div class="portrait-inner">{portrait_html}</div>
             </div>
             <div class="floating-chip chip-1"><strong>EAFIT</strong> Diseño Interactivo</div>
             <div class="floating-chip chip-2"><strong>20 años</strong> Medellín</div>
@@ -980,23 +913,14 @@ html_content = f"""
                 <span class="chip"><strong>2026</strong> Interfaces Multimodales</span>
             </div>
             <div class="hero-stats">
-                <div>
-                    <span class="stat-num" style="color: var(--violet);">9</span>
-                    <span class="stat-label">Proyectos</span>
-                </div>
-                <div>
-                    <span class="stat-num" style="color: var(--pink);">3</span>
-                    <span class="stat-label">Categorías</span>
-                </div>
-                <div>
-                    <span class="stat-num" style="color: var(--amber);">∞</span>
-                    <span class="stat-label">Curiosidad</span>
-                </div>
+                <div><span class="stat-num" style="color: var(--violet);">9</span><span class="stat-label">Proyectos</span></div>
+                <div><span class="stat-num" style="color: var(--pink);">3</span><span class="stat-label">Categorías</span></div>
+                <div><span class="stat-num" style="color: var(--amber);">∞</span><span class="stat-label">Curiosidad</span></div>
             </div>
         </div>
     </section>
 
-    <!-- SECCIÓN 01 · LLMs -->
+    <!-- 01 · LLMs (grid) -->
     <section id="llms" class="category-section" style="--sec-accent: var(--violet); --sec-accent-soft: rgba(192, 132, 252, 0.14);">
         <span class="bg-number bg-number-left" aria-hidden="true">01</span>
         <div class="cat-head">
@@ -1005,10 +929,10 @@ html_content = f"""
             <p class="cat-desc">Modelos de lenguaje e IA generativa aplicados a la comprensión de texto y de imágenes.</p>
             <span class="cat-count">2 aplicaciones</span>
         </div>
-        {render_carousel("carousel-llms", sec1_cards)}
+        {render_grid(sec1_cards)}
     </section>
 
-    <!-- SECCIÓN 02 · TÁCTILES -->
+    <!-- 02 · TÁCTILES (grid) -->
     <section id="tactil" class="category-section" style="--sec-accent: var(--pink); --sec-accent-soft: rgba(244, 114, 182, 0.14);">
         <span class="bg-number bg-number-right" aria-hidden="true">02</span>
         <div class="cat-head align-right">
@@ -1017,10 +941,10 @@ html_content = f"""
             <p class="cat-desc">Tableros digitales que combinan dibujo a mano con interpretación inteligente en tiempo real.</p>
             <span class="cat-count">4 aplicaciones</span>
         </div>
-        {render_carousel("carousel-tactil", sec2_cards)}
+        {render_grid(sec2_cards)}
     </section>
 
-    <!-- SECCIÓN 03 · IOT -->
+    <!-- 03 · IoT (carrusel) -->
     <section id="iot" class="category-section" style="--sec-accent: var(--amber); --sec-accent-soft: rgba(251, 191, 36, 0.14);">
         <span class="bg-number bg-number-left" aria-hidden="true">03</span>
         <div class="cat-head">
@@ -1040,76 +964,133 @@ html_content = f"""
         <a href="#inicio" class="back-top">↑ Volver arriba</a>
     </footer>
 </div>
-
-<!-- JAVASCRIPT NATIVO PARA CARRUSELES Y SCROLL -->
-<script>
-    function updateProgressBar() {{
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        const bar = document.getElementById('scroll-bar');
-        if (bar) bar.style.width = pct + '%';
-    }}
-    window.addEventListener('scroll', updateProgressBar, {{ passive: true }});
-
-    function carouselGoTo(id, idx) {{
-        const wrap = document.getElementById(id);
-        if (!wrap) return;
-        const track = wrap.querySelector('.carousel-track');
-        const slides = track.querySelectorAll('.carousel-slide');
-        if (slides[idx]) {{
-            track.scrollTo({{ left: slides[idx].offsetLeft - track.offsetLeft, behavior: 'smooth' }});
-        }}
-    }}
-
-    function carouselNext(id) {{
-        const wrap = document.getElementById(id);
-        if (!wrap) return;
-        const track = wrap.querySelector('.carousel-track');
-        track.scrollBy({{ left: 380, behavior: 'smooth' }});
-    }}
-
-    function carouselPrev(id) {{
-        const wrap = document.getElementById(id);
-        if (!wrap) return;
-        const track = wrap.querySelector('.carousel-track');
-        track.scrollBy({{ left: -380, behavior: 'smooth' }});
-    }}
-
-    function updateCarouselDots(id, total) {{
-        const wrap = document.getElementById(id);
-        if (!wrap) return;
-        const track = wrap.querySelector('.carousel-track');
-        const slides = Array.from(track.querySelectorAll('.carousel-slide'));
-        const scrollLeft = track.scrollLeft;
-        let closest = 0;
-        let minDist = Infinity;
-        slides.forEach((s, i) => {{
-            const dist = Math.abs(s.offsetLeft - track.offsetLeft - scrollLeft);
-            if (dist < minDist) {{
-                minDist = dist;
-                closest = i;
-            }}
-        }});
-        const dots = wrap.querySelectorAll('.carousel-dot');
-        dots.forEach((d, i) => {{
-            d.classList.toggle('is-active', i === closest);
-        }});
-        const counter = document.getElementById(id + '-counter');
-        if (counter) {{
-            counter.innerText = String(closest + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
-        }}
-    }}
-</script>
 """
 
-# ── FIX CRÍTICO ──────────────────────────────────────────────
-# El parser de markdown de Streamlit considera que cualquier línea
-# con 4+ espacios iniciales es un bloque de código. Como el HTML
-# tiene líneas en blanco que "cortan" los bloques HTML, todo el
-# cuerpo terminaba renderizándose como texto plano.
-# Al hacer lstrip() por línea evitamos ese problema (CSS y JS no
-# dependen del sangrado, y HTML tampoco).
+# Fix de indentación para st.markdown
 html_content = "\n".join(line.lstrip() for line in html_content.split("\n"))
 
 st.markdown(html_content, unsafe_allow_html=True)
+
+
+# ═══════════════════════════════════════════════════════════════
+# JAVASCRIPT (inyectado vía components.html → sí se ejecuta)
+# ═══════════════════════════════════════════════════════════════
+components.html("""
+<script>
+(function () {
+    function setup() {
+        const win = window.parent;
+        const doc = win.document;
+
+        // Evitar setup doble
+        const probe = doc.getElementById('scroll-bar');
+        if (!probe) { setTimeout(setup, 400); return; }
+        if (probe.dataset.jsReady === 'true') return;
+        probe.dataset.jsReady = 'true';
+
+        // ── 1. Barra de progreso de scroll ─────────────────
+        function updateProgress() {
+            const scrollTop = win.scrollY || doc.documentElement.scrollTop;
+            const docHeight = doc.documentElement.scrollHeight - win.innerHeight;
+            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            probe.style.width = pct + '%';
+        }
+        win.addEventListener('scroll', updateProgress, { passive: true });
+        updateProgress();
+
+        // ── 2. Side-nav activa ─────────────────────────────
+        const sectionIds = ['inicio', 'llms', 'tactil', 'iot', 'final'];
+        const navLinks = doc.querySelectorAll('.side-nav-dot-wrap');
+        function updateNav() {
+            let current = 'inicio';
+            sectionIds.forEach(id => {
+                const el = doc.getElementById(id);
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= win.innerHeight * 0.4) current = id;
+                }
+            });
+            navLinks.forEach(link =>
+                link.classList.toggle('is-active', link.dataset.sec === current)
+            );
+        }
+        win.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+
+        // ── 3. Carrusel funcional ──────────────────────────
+        doc.querySelectorAll('.carousel-wrap').forEach(wrap => {
+            const track = wrap.querySelector('.carousel-track');
+            if (!track) return;
+            const prev  = wrap.querySelector('.carousel-arrow-left');
+            const next  = wrap.querySelector('.carousel-arrow-right');
+            const dots  = wrap.querySelectorAll('.carousel-dot');
+            const slides = track.querySelectorAll('.carousel-slide');
+            const counter = wrap.querySelector('.carousel-counter');
+
+            const step = () => {
+                const s = slides[0];
+                return s ? s.offsetWidth + 28 : 400;
+            };
+
+            if (prev) prev.addEventListener('click', () => {
+                track.scrollBy({ left: -step(), behavior: 'smooth' });
+            });
+            if (next) next.addEventListener('click', () => {
+                track.scrollBy({ left: step(), behavior: 'smooth' });
+            });
+
+            const updateDots = () => {
+                const sl = track.scrollLeft;
+                let closest = 0, minDist = Infinity;
+                slides.forEach((s, i) => {
+                    const d = Math.abs(s.offsetLeft - track.offsetLeft - sl);
+                    if (d < minDist) { minDist = d; closest = i; }
+                });
+                dots.forEach((d, i) => d.classList.toggle('is-active', i === closest));
+                if (counter) {
+                    counter.textContent =
+                        String(closest + 1).padStart(2, '0') + ' / ' +
+                        String(slides.length).padStart(2, '0');
+                }
+            };
+            track.addEventListener('scroll', updateDots, { passive: true });
+            dots.forEach((d, i) => d.addEventListener('click', () => {
+                const s = slides[i];
+                if (s) track.scrollTo({
+                    left: s.offsetLeft - track.offsetLeft,
+                    behavior: 'smooth'
+                });
+            }));
+            updateDots();
+        });
+
+        // ── 4. Mouse glow + parallax de orbes ──────────────
+        const glow = doc.getElementById('mouse-glow');
+        const orb1 = doc.querySelector('.orb-1');
+        const orb2 = doc.querySelector('.orb-2');
+        if (glow) {
+            win.addEventListener('mousemove', (e) => {
+                glow.style.setProperty('--mx', e.clientX + 'px');
+                glow.style.setProperty('--my', e.clientY + 'px');
+
+                const x = e.clientX / win.innerWidth - 0.5;
+                const y = e.clientY / win.innerHeight - 0.5;
+                if (orb1) {
+                    orb1.style.setProperty('--px', (x * 70) + 'px');
+                    orb1.style.setProperty('--py', (y * 70) + 'px');
+                }
+                if (orb2) {
+                    orb2.style.setProperty('--px', (-x * 70) + 'px');
+                    orb2.style.setProperty('--py', (-y * 70) + 'px');
+                }
+            }, { passive: true });
+        }
+    }
+
+    // Reintentos: Streamlit puede tardar en montar el DOM
+    setTimeout(setup, 300);
+    setTimeout(setup, 900);
+    setTimeout(setup, 1800);
+})();
+</script>
+""", height=0)
