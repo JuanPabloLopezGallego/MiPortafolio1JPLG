@@ -28,11 +28,13 @@ def get_image_base64(path):
             return ""
     return ""
 
+
 def render_thumb(image_path, title):
     b64 = get_image_base64(image_path)
     if b64:
         return f'<img src="{b64}" alt="{title}" draggable="false" loading="lazy" />'
     return '<div class="app-thumb-placeholder">◇</div>'
+
 
 def render_card(kicker, title, desc, url, image_path):
     thumb_html = render_thumb(image_path, title)
@@ -56,9 +58,14 @@ def render_card(kicker, title, desc, url, image_path):
     </a>
     """
 
+
 def render_carousel(carousel_id, cards_html):
     cards_joined = "\n".join([f'<div class="carousel-slide">{c}</div>' for c in cards_html])
-    dots_joined = "\n".join([f'<button class="carousel-dot {"is-active" if i == 0 else ""}" onclick="carouselGoTo(\'{carousel_id}\', {i})" aria-label="Slide {i+1}"></button>' for i in range(len(cards_html))])
+    dots_joined = "\n".join([
+        f'<button class="carousel-dot {"is-active" if i == 0 else ""}" '
+        f'onclick="carouselGoTo(\'{carousel_id}\', {i})" aria-label="Slide {i+1}"></button>'
+        for i in range(len(cards_html))
+    ])
     total = len(cards_html)
     return f"""
     <div class="carousel-wrap" id="{carousel_id}">
@@ -76,7 +83,7 @@ def render_carousel(carousel_id, cards_html):
     """
 
 # ═══════════════════════════════════════════════════════════════
-# DATOS DE LOS PROYECTOS (Texto original conservado)
+# DATOS DE LOS PROYECTOS
 # ═══════════════════════════════════════════════════════════════
 sec1_cards = [
     render_card(
@@ -152,12 +159,16 @@ sec3_cards = [
 
 # Retrato base64
 portrait_b64 = get_image_base64("yo.png")
-portrait_html = f'<img src="{portrait_b64}" alt="Juan Pablo" draggable="false" />' if portrait_b64 else '<div class="portrait-placeholder">JP</div>'
+portrait_html = (
+    f'<img src="{portrait_b64}" alt="Juan Pablo" draggable="false" />'
+    if portrait_b64
+    else '<div class="portrait-placeholder">JP</div>'
+)
 
 # ═══════════════════════════════════════════════════════════════
 # INYECCIÓN DEL CÓDIGO COMPLETO (HTML + CSS + JS)
 # ═══════════════════════════════════════════════════════════════
-st.markdown(f"""
+html_content = f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
@@ -931,7 +942,6 @@ st.markdown(f"""
 
 <!-- CONTENEDOR PRINCIPAL -->
 <div class="experience-wrap">
-
     <!-- HERO -->
     <section id="inicio" class="hero-grid">
         <div class="portrait-wrap">
@@ -946,7 +956,6 @@ st.markdown(f"""
             <div class="floating-chip chip-3"><strong>2026</strong> Multimodales</div>
             <div class="portrait-caption">Juan Pablo<span class="star">✦</span>Parte 2 · 2026</div>
         </div>
-
         <div>
             <div class="part-badge">
                 <span class="num">2</span>
@@ -965,13 +974,11 @@ st.markdown(f"""
                 <span class="icon">✦</span>
                 <span>Esta es la <b>segunda parte</b> del portafolio. Reúne las actividades más recientes del curso, incluyendo las integraciones con hardware y los tableros interactivos.</span>
             </div>
-
             <div class="chips-mobile">
                 <span class="chip"><strong>EAFIT</strong> Diseño Interactivo</span>
                 <span class="chip"><strong>20 años</strong> Medellín</span>
                 <span class="chip"><strong>2026</strong> Interfaces Multimodales</span>
             </div>
-
             <div class="hero-stats">
                 <div>
                     <span class="stat-num" style="color: var(--violet);">9</span>
@@ -1032,7 +1039,6 @@ st.markdown(f"""
         <p class="footer-sub">Juan Pablo · EAFIT · Interfaces Multimodales · Parte 2 · 2026</p>
         <a href="#inicio" class="back-top">↑ Volver arriba</a>
     </footer>
-
 </div>
 
 <!-- JAVASCRIPT NATIVO PARA CARRUSELES Y SCROLL -->
@@ -1095,4 +1101,15 @@ st.markdown(f"""
         }}
     }}
 </script>
-""", unsafe_allow_html=True)
+"""
+
+# ── FIX CRÍTICO ──────────────────────────────────────────────
+# El parser de markdown de Streamlit considera que cualquier línea
+# con 4+ espacios iniciales es un bloque de código. Como el HTML
+# tiene líneas en blanco que "cortan" los bloques HTML, todo el
+# cuerpo terminaba renderizándose como texto plano.
+# Al hacer lstrip() por línea evitamos ese problema (CSS y JS no
+# dependen del sangrado, y HTML tampoco).
+html_content = "\n".join(line.lstrip() for line in html_content.split("\n"))
+
+st.markdown(html_content, unsafe_allow_html=True)
